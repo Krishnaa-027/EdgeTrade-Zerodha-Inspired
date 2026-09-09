@@ -1,0 +1,78 @@
+.footer-social-column a {
+    color: #5c5959;
+    text-decoration: none;
+    font-size: 20px;
+    margin-right: 25px;
+    
+}
+.footer-social-column i {
+    color: #494646;
+}
+
+.footer-social-column a:hover i {
+    color: #0365f8;
+}
+
+.footer-social-column a:hover {
+    color: #0365f8;
+}
+
+.footer-X-icon {
+    width: 17px;
+    height: 16px;
+    opacity: 1;
+    vertical-align: middle;
+    margin-bottom: 4px;
+}
+
+.footer-column-heading {
+    color: #222;
+    font-size: 17px;
+    font-weight: 500;
+    opacity: 1;
+    letter-spacing: 0.2px;
+}
+.footer-column-links a {
+    color: #000;
+    opacity: 0.5;
+    font-size: 14px;
+    font-weight: 400;
+    text-decoration: none;
+    text-shadow: 0 0 0.4px currentColor;
+    letter-spacing: 0.2px;
+    line-height: 2.5;
+    
+}
+.footer-column-links a:hover {
+    color: #0d6efd;
+    opacity: 1;
+}
+
+
+.footer-para {
+    color: #a7a4a4;
+    text-shadow: 0 0 0.5px currentColor;
+}
+.footer-para-link {
+    color: #0267fd;
+    text-decoration: none;
+    text-shadow: 0 0 0.5px currentColor;
+}
+.footer-para-link:hover {
+    color: #4b4949;
+    opacity: 0.9;
+}
+.footer-links {
+    font-size: 13px;
+}
+.footer-links a {
+    color: #968e8e;
+    text-decoration: none;
+    font-weight: 500;
+    text-shadow: 0 0 0.5px currentColor;
+}
+.footer-links a:hover {
+    color: #0d6efd;
+    opacity: 1;
+} 
+
