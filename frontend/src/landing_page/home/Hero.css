@@ -1,0 +1,16 @@
+.hero-image {
+    margin-bottom: 50px;
+}
+
+.hero-heading {
+    margin-top: 50px;
+}
+
+.hero-text {
+    font-size: 18px;
+}
+
+.hero-button {
+    width: 15%;
+    margin: 0 auto;
+}
