@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 function NavBar() {
     return (
@@ -10,13 +11,13 @@ function NavBar() {
             }}
         >
             <div className="container p-2">
-                <a className="navbar-brand ms-1 mb-1" href="#">
+                <Link className="navbar-brand ms-1 mb-1" to="/">
                     <img
                         src="media/images/logo.svg"
                         alt="logo"
                         style={{ width: "22%" }}
                     />
-                </a>
+                </Link>
 
                 <button
                     className="navbar-toggler"
@@ -36,10 +37,10 @@ function NavBar() {
                 >
                     <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                         <li className="nav-item me-4 ">
-                            <a
+                            <Link
                                 className="nav-link active"
                                 aria-current="page"
-                                href="#"
+                                to="/signup"
                                 style={{
                                     color: "#3b3a3a",
                                     opacity: 0.6,
@@ -49,13 +50,13 @@ function NavBar() {
                                 }}
                             >
                                 Signup
-                            </a>
+                            </Link>
                         </li>
 
                         <li className="nav-item me-4">
-                            <a
+                            <Link
                                 className="nav-link active"
-                                href="#"
+                                to="/about"
                                 style={{
                                     color: "#3b3a3a",
                                     opacity: 0.6,
@@ -65,13 +66,13 @@ function NavBar() {
                                 }}
                             >
                                 About
-                            </a>
+                            </Link>
                         </li>
 
                         <li className="nav-item me-4">
-                            <a
+                            <Link
                                 className="nav-link active"
-                                href="#"
+                                to="/products"
                                 style={{
                                     color: "#3b3a3a",
                                     opacity: 0.6,
@@ -81,13 +82,13 @@ function NavBar() {
                                 }}
                             >
                                 Products
-                            </a>
+                            </Link>
                         </li>
 
                         <li className="nav-item me-4">
-                            <a
+                            <Link
                                 className="nav-link active"
-                                href="#"
+                                to="/pricing"
                                 style={{
                                     color: "#3b3a3a",
                                     opacity: 0.6,
@@ -97,13 +98,13 @@ function NavBar() {
                                 }}
                             >
                                 Pricing
-                            </a>
+                            </Link>
                         </li>
 
                         <li className="nav-item me-4">
-                            <a
+                            <Link
                                 className="nav-link active"
-                                href="#"
+                                to="/support"
                                 style={{
                                     color: "#3b3a3a",
                                     opacity: 0.6,
@@ -113,7 +114,7 @@ function NavBar() {
                                 }}
                             >
                                 Support
-                            </a>
+                            </Link>
                         </li>
                         <li className="nav-item me-4 mt-2">
                             <i

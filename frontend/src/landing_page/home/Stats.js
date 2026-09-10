@@ -39,8 +39,8 @@ function Stats() {
                     <img
                         src="media/images/ecosystem.png"
                         alt="ecosystem img"
-                        className="mt-4 ms-3 mb-4"
-                        style={{ width: "100%" }}
+                        className="mt-3 ms-2 mb-3"
+                        style={{ width: "112%" }}
                     />
                     <div className="text-center">
                         <a
