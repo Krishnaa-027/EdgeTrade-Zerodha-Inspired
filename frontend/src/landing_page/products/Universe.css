@@ -1,0 +1,29 @@
+
+.universe-image {
+    width: 190px;
+    height: 75px;
+    object-fit: contain;
+}
+
+.universe-main-section p {
+    width: 84%;
+    margin: 15px auto 70px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #555;
+    text-shadow: 0 0 0.6px currentColor;
+    opacity: 0.8;
+}
+
+.universe-main-section img + p {
+    margin-bottom: 60px;
+}
+
+.universe-link {
+    display: block;
+    text-decoration: none;
+}
+
+.universe-link:hover .universe-image {
+    opacity: 0.7;
+}

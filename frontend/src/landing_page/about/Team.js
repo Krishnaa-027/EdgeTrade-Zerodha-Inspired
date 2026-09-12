@@ -19,7 +19,7 @@ function Team() {
                         src="media/images/my_image.jpeg"
                         style={{
                             borderRadius: "100%",
-                            width: "310px",
+                            width: "305px",
                             height: "325px",
                             marginBottom: "25px",
                             marginRight: "5px",

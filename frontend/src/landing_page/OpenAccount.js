@@ -11,7 +11,7 @@ function OpenAccount() {
         </p>
         <button
           className="p-2 btn btn-primary fs-5 mb-5"
-          style={{ width: "20%", margin: "0 auto" }}
+          style={{ width: "20%", margin: "0 auto", backgroundColor:"#2e75d3", fontWeight: "500" }}
         >
           Sign up for free
         </button>

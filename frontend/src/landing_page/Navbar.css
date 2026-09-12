@@ -1,0 +1,18 @@
+.nav-link {
+    color: #3b3a3a;
+    opacity: 0.9;
+    font-weight: 500;
+    font-size: 15px;
+    letter-spacing: 0.2px;
+    transition: color 0.25s ease;
+}
+
+.nav-link:hover {
+    color: #5fa3f5 !important;
+    opacity: 1;
+}
+
+.nav-link.active-page {
+    color: #0267fd !important;
+    opacity: 1;
+}

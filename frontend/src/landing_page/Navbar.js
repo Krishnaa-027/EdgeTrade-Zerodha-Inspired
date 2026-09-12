@@ -1,5 +1,6 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
+import "./Navbar.css";
 
 function NavBar() {
     return (
@@ -10,7 +11,7 @@ function NavBar() {
                 borderBottom: "2px solid #f3f2f1",
             }}
         >
-            <div className="container p-2">
+            <div className="container p-1">
                 <Link className="navbar-brand ms-1 mb-1" to="/">
                     <img
                         src="media/images/logo.svg"
@@ -36,86 +37,71 @@ function NavBar() {
                     id="navbarSupportedContent"
                 >
                     <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li className="nav-item me-4 ">
-                            <Link
-                                className="nav-link active"
-                                aria-current="page"
+                        <li className="nav-item me-4">
+                            <NavLink
+                                className={({ isActive }) =>
+                                    isActive
+                                        ? "nav-link active-page"
+                                        : "nav-link"
+                                }
                                 to="/signup"
-                                style={{
-                                    color: "#3b3a3a",
-                                    opacity: 0.6,
-                                    fontWeight: 500,
-                                    fontSize: "15px",
-                                    letterSpacing: "0.2px",
-                                }}
                             >
                                 Signup
-                            </Link>
+                            </NavLink>
                         </li>
 
                         <li className="nav-item me-4">
-                            <Link
-                                className="nav-link active"
+                            <NavLink
+                                className={({ isActive }) =>
+                                    isActive
+                                        ? "nav-link active-page"
+                                        : "nav-link"
+                                }
                                 to="/about"
-                                style={{
-                                    color: "#3b3a3a",
-                                    opacity: 0.6,
-                                    fontWeight: 500,
-                                    fontSize: "15px",
-                                    letterSpacing: "0.2px",
-                                }}
                             >
                                 About
-                            </Link>
+                            </NavLink>
                         </li>
 
                         <li className="nav-item me-4">
-                            <Link
-                                className="nav-link active"
+                            <NavLink
+                                className={({ isActive }) =>
+                                    isActive
+                                        ? "nav-link active-page"
+                                        : "nav-link"
+                                }
                                 to="/products"
-                                style={{
-                                    color: "#3b3a3a",
-                                    opacity: 0.6,
-                                    fontWeight: 500,
-                                    fontSize: "15px",
-                                    letterSpacing: "0.2px",
-                                }}
                             >
                                 Products
-                            </Link>
+                            </NavLink>
                         </li>
 
                         <li className="nav-item me-4">
-                            <Link
-                                className="nav-link active"
+                            <NavLink
+                                className={({ isActive }) =>
+                                    isActive
+                                        ? "nav-link active-page"
+                                        : "nav-link"
+                                }
                                 to="/pricing"
-                                style={{
-                                    color: "#3b3a3a",
-                                    opacity: 0.6,
-                                    fontWeight: 500,
-                                    fontSize: "15px",
-                                    letterSpacing: "0.2px",
-                                }}
                             >
                                 Pricing
-                            </Link>
+                            </NavLink>
                         </li>
 
                         <li className="nav-item me-4">
-                            <Link
-                                className="nav-link active"
+                            <NavLink
+                                className={({ isActive }) =>
+                                    isActive
+                                        ? "nav-link active-page"
+                                        : "nav-link"
+                                }
                                 to="/support"
-                                style={{
-                                    color: "#3b3a3a",
-                                    opacity: 0.6,
-                                    fontWeight: 500,
-                                    fontSize: "15px",
-                                    letterSpacing: "0.2px",
-                                }}
                             >
                                 Support
-                            </Link>
+                            </NavLink>
                         </li>
+
                         <li className="nav-item me-4 mt-2">
                             <i
                                 className="fa fa-bars fs-4"
