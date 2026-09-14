@@ -1,0 +1,109 @@
+.charges-section {
+    margin-top: 60px;
+    margin-bottom: 60px;
+}
+
+.charges-heading {
+    font-size: 26px;
+    font-weight: 400;
+    color: #333;
+    margin-bottom: 30px;
+    text-shadow: 0 0 0.7px currentColor;
+}
+
+.charges-table {
+    width: 100%;
+    border: 1px solid #dddddd;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 4px;
+}
+
+.charges-table th,
+.charges-table td {
+    border: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    padding: 14px 15px;
+    font-size: 15.5px;
+    color: #444;
+    transform: scaleY(0.95);
+    text-shadow: 0 0 0.5px currentColor;
+    opacity: 0.8;
+}
+
+.charges-table thead th {
+    font-weight: 400;
+    color: #272727;
+    border-bottom: 1px solid #dddddd !important;
+    text-shadow: 0 0 0.8px currentColor;
+    letter-spacing: 0.6px;
+    opacity: 1;
+}
+
+.charges-table tbody th {
+    font-weight: 400;
+    color: #666;
+}
+
+.charges-table tbody tr:nth-child(even) {
+    background-color: #faf9f9;
+}
+
+.free-badge {
+    display: inline-block;
+    background-color: #32ac36;
+    color: white;
+    font-weight: 500;
+    font-size: 12px;
+    padding: 2px 7px;
+    opacity: 1;
+}
+
+.amc-section {
+    margin-top: 100px;
+    margin-bottom: 125px;
+}
+
+.amc-note {
+    display: inline-block;
+    background-color: #f3f3f3;
+    border-left: 4px solid #0267fd;
+    padding: 10px 15px;
+    font-size: 15.5px;
+    font-weight: 400;
+    color: #444;
+    text-shadow: 0 0 0.5px currentColor;
+    opacity: 0.8;
+    margin-bottom: 10px;
+}
+
+.charges-paragraph {
+    font-size: 13px;
+    font-weight: 400;
+    color: #444;
+    line-height: 1.6;
+    text-shadow: 0 0 0.5px currentColor;
+    opacity: 0.8;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.charges-link {
+    color: #0267fd;
+    text-decoration: none;
+}
+
+.charges-link:hover {
+    color: #444;
+}
+
+.charges-footnote {
+    font-size: 13px;
+    font-weight: 400;
+    color: #444;
+    line-height: 1.6;
+    text-shadow: 0 0 0.5px currentColor;
+    opacity: 0.8;
+    margin-top: 15px;
+}
