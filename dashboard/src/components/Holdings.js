@@ -1,16 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 
-// import { holdings } from "../data/data";
 import axios from "axios";
+
+import GeneralContext from "./GeneralContext";
 
 const Holdings = () => {
     const [allHoldings, setAllHoldings] = useState([]);
+
+    const { holdingsRefresh } = useContext(GeneralContext);
 
     useEffect(() => {
         axios.get("http://localhost:3002/allHoldings").then((res) => {
             setAllHoldings(res.data);
         });
-    }, []);
+    }, [holdingsRefresh]);
 
     return (
         <>
@@ -63,12 +66,14 @@ const Holdings = () => {
                     </h5>
                     <p>Total investment</p>
                 </div>
+
                 <div className="col">
                     <h5>
                         31,428.<span>95</span>{" "}
                     </h5>
                     <p>Current value</p>
                 </div>
+
                 <div className="col">
                     <h5>1,553.40 (+5.20%)</h5>
                     <p>P&L</p>
@@ -79,3 +84,4 @@ const Holdings = () => {
 };
 
 export default Holdings;
+

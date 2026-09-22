@@ -731,6 +731,7 @@ hr {
   text-align: center;
   margin-right: 8px;
   cursor: pointer;
+  vertical-align: middle;
 }
 
 .buy {
@@ -757,6 +758,7 @@ hr {
 .icon {
   transform: scale(0.7);
   color: rgb(65, 65, 65);
+  vertical-align: middle;
 }
 
 .watchlist-number {

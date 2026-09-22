@@ -202,19 +202,68 @@ app.get("/allPositions", async (req, res) => {
 });
 
 app.post("/newOrder", async (req, res) => {
-    let newOrder = new OrdersModel({
-        name: req.body.name,
-        qty: req.body.qty,
-        price: req.body.price,
-        mode: req.body.mode,
-    });
+    try {
+        const { name, qty, price, mode } = req.body;
 
-    newOrder.save();
-    res.send("Order saved");
+        if (mode !== "BUY") {
+            return res.status(400).send("Only BUY orders are allowed right now");
+        }
+
+        let newOrder = new OrdersModel({
+            name: name,
+            qty: qty,
+            price: price,
+            mode: mode,
+        });
+
+        await newOrder.save();
+
+        let existingHolding = await HoldingsModel.findOne({
+            name: name,
+        });
+
+        if (existingHolding) {
+            let oldQty = existingHolding.qty;
+            let oldAvg = existingHolding.avg;
+
+            let newQty = oldQty + Number(qty);
+
+            let newAvg =
+                (oldQty * oldAvg + Number(qty) * Number(price)) / newQty;
+
+            existingHolding.qty = newQty;
+            existingHolding.avg = newAvg;
+            existingHolding.price = Number(price);
+
+            await existingHolding.save();
+        } else {
+            let newHolding = new HoldingsModel({
+                name: name,
+                qty: Number(qty),
+                avg: Number(price),
+                price: Number(price),
+                net: "0.00%",
+                day: "0.00%",
+            });
+
+            await newHolding.save();
+        }
+
+        res.send("Order saved and holding updated");
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Something went wrong");
+    }
 });
 
-app.listen(3002, () => {
-    console.log("App started");
-    mongoose.connect(uri);
-    console.log("DB Connected");
+app.listen(PORT, () => {
+    console.log(`App started on port ${PORT}`);
+
+    mongoose.connect(uri)
+        .then(() => {
+            console.log("DB Connected");
+        })
+        .catch((error) => {
+            console.log("DB connection error:", error);
+        });
 });
