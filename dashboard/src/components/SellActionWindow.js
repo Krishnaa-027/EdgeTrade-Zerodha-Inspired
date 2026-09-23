@@ -7,34 +7,46 @@ import GeneralContext from "./GeneralContext";
 
 import "./BuyActionWindow.css";
 
-const BuyActionWindow = ({ uid }) => {
+const SellActionWindow = ({ uid }) => {
     const [product, setProduct] = useState("CNC");
     const [stockQuantity, setStockQuantity] = useState(1);
     const [stockPrice, setStockPrice] = useState(0.0);
+    const [error, setError] = useState("");
 
     const {
-        closeBuyWindow,
+        closeSellWindow,
         refreshHoldings,
         showSuccessMessage,
     } = useContext(GeneralContext);
 
-    const handleBuyClick = async () => {
-        await axios.post("http://localhost:3002/newOrder", {
-            name: uid,
-            qty: stockQuantity,
-            price: stockPrice,
-            mode: "BUY",
-            product: product,
-        });
+    const handleSellClick = async () => {
+        try {
+            await axios.post("http://localhost:3002/newOrder", {
+                name: uid,
+                qty: stockQuantity,
+                price: stockPrice,
+                mode: "SELL",
+                product: product,
+            });
 
-        refreshHoldings();
-        closeBuyWindow();
+            setError("");
+            refreshHoldings();
+            closeSellWindow();
 
-        showSuccessMessage(`Buy order successful for ${uid}`);
+            showSuccessMessage(`Sell order successful for ${uid}`);
+        } catch (error) {
+            setError(
+                error.response?.data || "Something went wrong"
+            );
+
+            setTimeout(() => {
+                setError("");
+            }, 4000);
+        }
     };
 
     const handleCancelClick = () => {
-        closeBuyWindow();
+        closeSellWindow();
     };
 
     return (
@@ -95,9 +107,9 @@ const BuyActionWindow = ({ uid }) => {
                 <div>
                     <Link
                         className="btn btn-blue"
-                        onClick={handleBuyClick}
+                        onClick={handleSellClick}
                     >
-                        Buy
+                        Sell
                     </Link>
 
                     <Link
@@ -109,9 +121,14 @@ const BuyActionWindow = ({ uid }) => {
                     </Link>
                 </div>
             </div>
+
+            {error && (
+                <div className="error-message">
+                    {error}
+                </div>
+            )}
         </div>
     );
 };
 
-export default BuyActionWindow;
-
+export default SellActionWindow;

@@ -1,18 +1,77 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect, useContext } from "react";
+import axios from "axios";
+
+import GeneralContext from "./GeneralContext";
 
 const Orders = () => {
-  return (
-    <div className="orders">
-      <div className="no-orders">
-        <p>You haven't placed any orders today</p>
+    const [allOrders, setAllOrders] = useState([]);
 
-        <Link to={"/"} className="btn">
-          Get started
-        </Link>
-      </div>
-    </div>
-  );
+    const { holdingsRefresh } = useContext(GeneralContext);
+
+    useEffect(() => {
+        axios
+            .get("http://localhost:3002/allOrders")
+            .then((res) => {
+                setAllOrders(res.data);
+            });
+    }, [holdingsRefresh]);
+
+    return (
+        <div className="orders">
+            {allOrders.length === 0 ? (
+                <div className="no-orders">
+                    <p>You haven't placed any orders today</p>
+
+                    <button className="btn">
+                        Get started
+                    </button>
+                </div>
+            ) : (
+                <div className="order-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Mode</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {allOrders.map((order, index) => {
+                                return (
+                                    <tr key={index}>
+                                        <td>{order.name}</td>
+
+                                        <td>
+                                            {order.product || "-"}
+                                        </td>
+
+                                        <td>{order.qty}</td>
+
+                                        <td>₹{order.price}</td>
+
+                                        <td
+                                            className={
+                                                order.mode === "BUY"
+                                                    ? "profit"
+                                                    : "loss"
+                                            }
+                                        >
+                                            {order.mode}
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+            )}
+        </div>
+    );
 };
 
 export default Orders;
+

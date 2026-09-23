@@ -201,60 +201,179 @@ app.get("/allPositions", async (req, res) => {
     res.json(allPositions);
 });
 
+
+app.get("/allOrders", async (req, res) => {
+    let allOrders = await OrdersModel.find({});
+    res.send(allOrders);
+});
+
+
+
 app.post("/newOrder", async (req, res) => {
     try {
-        const { name, qty, price, mode } = req.body;
-
-        if (mode !== "BUY") {
-            return res.status(400).send("Only BUY orders are allowed right now");
-        }
-
-        let newOrder = new OrdersModel({
-            name: name,
-            qty: qty,
-            price: price,
-            mode: mode,
-        });
-
-        await newOrder.save();
+        const { name, qty, price, mode, product } = req.body;
 
         let existingHolding = await HoldingsModel.findOne({
             name: name,
         });
 
-        if (existingHolding) {
-            let oldQty = existingHolding.qty;
-            let oldAvg = existingHolding.avg;
+        let existingPosition = await PositionsModel.findOne({
+            name: name,
+            product: "MIS",
+        });
 
-            let newQty = oldQty + Number(qty);
-
-            let newAvg =
-                (oldQty * oldAvg + Number(qty) * Number(price)) / newQty;
-
-            existingHolding.qty = newQty;
-            existingHolding.avg = newAvg;
-            existingHolding.price = Number(price);
-
-            await existingHolding.save();
-        } else {
-            let newHolding = new HoldingsModel({
+        if (mode === "BUY") {
+            let newOrder = new OrdersModel({
                 name: name,
-                qty: Number(qty),
-                avg: Number(price),
-                price: Number(price),
-                net: "0.00%",
-                day: "0.00%",
+                qty: qty,
+                price: price,
+                mode: mode,
+                product: product,
             });
 
-            await newHolding.save();
+            await newOrder.save();
+
+            if (product === "CNC") {
+                if (existingHolding) {
+                    let oldQty = existingHolding.qty;
+                    let oldAvg = existingHolding.avg;
+
+                    let newQty = oldQty + Number(qty);
+
+                    let newAvg =
+                        (oldQty * oldAvg + Number(qty) * Number(price)) /
+                        newQty;
+
+                    existingHolding.qty = newQty;
+                    existingHolding.avg = newAvg;
+                    existingHolding.price = Number(price);
+
+                    await existingHolding.save();
+                } else {
+                    let newHolding = new HoldingsModel({
+                        name: name,
+                        qty: Number(qty),
+                        avg: Number(price),
+                        price: Number(price),
+                        net: "0.00%",
+                        day: "0.00%",
+                    });
+
+                    await newHolding.save();
+                }
+            }
+
+            if (product === "MIS") {
+                if (existingPosition) {
+                    let oldQty = existingPosition.qty;
+                    let oldAvg = existingPosition.avg;
+
+                    let newQty = oldQty + Number(qty);
+
+                    let newAvg =
+                        (oldQty * oldAvg + Number(qty) * Number(price)) /
+                        newQty;
+
+                    existingPosition.qty = newQty;
+                    existingPosition.avg = newAvg;
+                    existingPosition.price = Number(price);
+
+                    await existingPosition.save();
+                } else {
+                    let newPosition = new PositionsModel({
+                        product: "MIS",
+                        name: name,
+                        qty: Number(qty),
+                        avg: Number(price),
+                        price: Number(price),
+                        net: "0.00%",
+                        day: "0.00%",
+                        isLoss: false,
+                    });
+
+                    await newPosition.save();
+                }
+            }
+
+            return res.send("Buy order saved successfully");
         }
 
-        res.send("Order saved and holding updated");
+        if (mode === "SELL") {
+            if (product === "CNC") {
+                if (!existingHolding) {
+                    return res.status(400).send("Holding not found");
+                }
+
+                if (Number(qty) > existingHolding.qty) {
+                    return res.status(400).send("Not enough quantity to sell");
+                }
+            }
+
+            if (product === "MIS") {
+                if (!existingPosition) {
+                    return res.status(400).send("Position not found");
+                }
+
+                if (Number(qty) > existingPosition.qty) {
+                    return res
+                        .status(400)
+                        .send("Not enough quantity in position");
+                }
+            }
+
+            let newOrder = new OrdersModel({
+                name: name,
+                qty: qty,
+                price: price,
+                mode: mode,
+                product: product,
+            });
+
+            await newOrder.save();
+
+            if (product === "CNC") {
+                let newQty =
+                    existingHolding.qty - Number(qty);
+
+                if (newQty === 0) {
+                    await HoldingsModel.deleteOne({
+                        name: name,
+                    });
+                } else {
+                    existingHolding.qty = newQty;
+                    existingHolding.price = Number(price);
+
+                    await existingHolding.save();
+                }
+            }
+
+            if (product === "MIS") {
+                let newQty =
+                    existingPosition.qty - Number(qty);
+
+                if (newQty === 0) {
+                    await PositionsModel.deleteOne({
+                        name: name,
+                        product: "MIS",
+                    });
+                } else {
+                    existingPosition.qty = newQty;
+                    existingPosition.price = Number(price);
+
+                    await existingPosition.save();
+                }
+            }
+
+            return res.send("Sell order saved successfully");
+        }
+
+        return res.status(400).send("Invalid order mode");
     } catch (error) {
         console.log(error);
         res.status(500).send("Something went wrong");
     }
 });
+       
 
 app.listen(PORT, () => {
     console.log(`App started on port ${PORT}`);

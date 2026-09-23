@@ -15,6 +15,23 @@ const Holdings = () => {
         });
     }, [holdingsRefresh]);
 
+    const totalInvestment = allHoldings.reduce((total, stock) => {
+        return total + stock.avg * stock.qty;
+    }, 0);
+
+    const currentValue = allHoldings.reduce((total, stock) => {
+        return total + stock.price * stock.qty;
+    }, 0);
+
+    const totalPnL = currentValue - totalInvestment;
+
+    const totalPnLPercentage =
+        totalInvestment === 0
+            ? 0
+            : (totalPnL / totalInvestment) * 100;
+
+    const totalPnLClass = totalPnL >= 0 ? "profit" : "loss";
+
     return (
         <>
             <h3 className="title">Holdings ({allHoldings.length})</h3>
@@ -62,20 +79,23 @@ const Holdings = () => {
             <div className="row">
                 <div className="col">
                     <h5>
-                        29,875.<span>55</span>{" "}
+                        {totalInvestment.toFixed(2)}
                     </h5>
                     <p>Total investment</p>
                 </div>
 
                 <div className="col">
                     <h5>
-                        31,428.<span>95</span>{" "}
+                        {currentValue.toFixed(2)}
                     </h5>
                     <p>Current value</p>
                 </div>
 
                 <div className="col">
-                    <h5>1,553.40 (+5.20%)</h5>
+                    <h5 className={totalPnLClass}>
+                        {totalPnL.toFixed(2)} (
+                        {totalPnLPercentage.toFixed(2)}%)
+                    </h5>
                     <p>P&L</p>
                 </div>
             </div>
@@ -84,4 +104,3 @@ const Holdings = () => {
 };
 
 export default Holdings;
-

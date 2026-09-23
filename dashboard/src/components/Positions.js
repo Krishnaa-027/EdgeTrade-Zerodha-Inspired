@@ -1,19 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 
 // import { positions } from "../data/data";
 
 import axios from "axios";
 
-    
+import GeneralContext from "./GeneralContext";
+
+
 const Positions = () => {
 
   const [allPositions, setAllPositions] = useState([]);
 
-    useEffect(() => {
-        axios.get("http://localhost:3002/allPositions").then((res) => {
-            setAllPositions(res.data);
-        });
-    }, []);
+  const { holdingsRefresh } = useContext(GeneralContext);
+
+  useEffect(() => {
+    axios.get("http://localhost:3002/allPositions").then((res) => {
+      setAllPositions(res.data);
+    });
+  }, [holdingsRefresh]);
 
 
   return (
