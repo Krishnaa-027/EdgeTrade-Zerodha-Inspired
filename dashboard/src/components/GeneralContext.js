@@ -10,6 +10,8 @@ const GeneralContext = React.createContext({
     closeSellWindow: () => {},
     refreshHoldings: () => {},
     holdingsRefresh: 0,
+    refreshFunds: () => {},
+    fundsRefresh: 0,
     showSuccessMessage: (message) => {},
 });
 
@@ -19,6 +21,7 @@ export const GeneralContextProvider = (props) => {
 
     const [selectedStockUID, setSelectedStockUID] = useState("");
     const [holdingsRefresh, setHoldingsRefresh] = useState(0);
+    const [fundsRefresh, setFundsRefresh] = useState(0);
 
     const [successMessage, setSuccessMessage] = useState("");
 
@@ -46,6 +49,10 @@ export const GeneralContextProvider = (props) => {
         setHoldingsRefresh((prev) => prev + 1);
     };
 
+    const handleRefreshFunds = () => {
+        setFundsRefresh((prev) => prev + 1);
+    };
+
     const handleShowSuccessMessage = (message) => {
         setSuccessMessage(message);
 
@@ -65,6 +72,9 @@ export const GeneralContextProvider = (props) => {
 
                 refreshHoldings: handleRefreshHoldings,
                 holdingsRefresh: holdingsRefresh,
+
+                refreshFunds: handleRefreshFunds,
+                fundsRefresh: fundsRefresh,
 
                 showSuccessMessage: handleShowSuccessMessage,
             }}
@@ -98,3 +108,4 @@ export const GeneralContextProvider = (props) => {
 };
 
 export default GeneralContext;
+

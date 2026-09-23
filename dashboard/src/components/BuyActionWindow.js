@@ -15,6 +15,7 @@ const BuyActionWindow = ({ uid }) => {
     const {
         closeBuyWindow,
         refreshHoldings,
+        refreshFunds,
         showSuccessMessage,
     } = useContext(GeneralContext);
 
@@ -28,6 +29,7 @@ const BuyActionWindow = ({ uid }) => {
         });
 
         refreshHoldings();
+        refreshFunds();
         closeBuyWindow();
 
         showSuccessMessage(`Buy order successful for ${uid}`);
@@ -90,7 +92,7 @@ const BuyActionWindow = ({ uid }) => {
             </div>
 
             <div className="buttons">
-                <span>Margin required ₹140.65</span>
+                <span>Margin required: ₹ _ _</span>
 
                 <div>
                     <Link

@@ -16,6 +16,7 @@ const SellActionWindow = ({ uid }) => {
     const {
         closeSellWindow,
         refreshHoldings,
+        refreshFunds,
         showSuccessMessage,
     } = useContext(GeneralContext);
 
@@ -31,6 +32,7 @@ const SellActionWindow = ({ uid }) => {
 
             setError("");
             refreshHoldings();
+            refreshFunds();
             closeSellWindow();
 
             showSuccessMessage(`Sell order successful for ${uid}`);
@@ -102,7 +104,7 @@ const SellActionWindow = ({ uid }) => {
             </div>
 
             <div className="buttons">
-                <span>Margin required ₹140.65</span>
+                <span>Margin required: ₹ _ _</span>
 
                 <div>
                     <Link

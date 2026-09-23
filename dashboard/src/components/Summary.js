@@ -6,14 +6,24 @@ import GeneralContext from "./GeneralContext";
 
 const Summary = () => {
     const [allHoldings, setAllHoldings] = useState([]);
+    const [funds, setFunds] = useState(null);
 
-    const { holdingsRefresh } = useContext(GeneralContext);
+    const {
+        holdingsRefresh,
+        fundsRefresh,
+    } = useContext(GeneralContext);
 
     useEffect(() => {
         axios.get("http://localhost:3002/allHoldings").then((res) => {
             setAllHoldings(res.data);
         });
     }, [holdingsRefresh]);
+
+    useEffect(() => {
+        axios.get("http://localhost:3002/funds").then((res) => {
+            setFunds(res.data);
+        });
+    }, [fundsRefresh]);
 
     const totalInvestment = allHoldings.reduce((total, stock) => {
         return total + stock.avg * stock.qty;
@@ -46,20 +56,34 @@ const Summary = () => {
 
                 <div className="data">
                     <div className="first">
-                        <h3>3.74k</h3>
+                        <h3>
+                            {funds
+                                ? (funds.availableCash / 1000).toFixed(2)
+                                : "0.00"}
+                            k
+                        </h3>
                         <p>Margin available</p>
                     </div>
+
                     <hr />
 
                     <div className="second">
                         <p>
-                            Margins used <span>0</span>{" "}
+                            Margins used <span>--</span>
                         </p>
+
                         <p>
-                            Opening balance <span>3.74k</span>{" "}
+                            Opening balance{" "}
+                            <span>
+                                {funds
+                                    ? (funds.initialBalance / 1000).toFixed(2)
+                                    : "0.00"}
+                                k
+                            </span>
                         </p>
                     </div>
                 </div>
+
                 <hr className="divider" />
             </div>
 
@@ -79,6 +103,7 @@ const Summary = () => {
                         </h3>
                         <p>P&L</p>
                     </div>
+
                     <hr />
 
                     <div className="second">
@@ -86,17 +111,18 @@ const Summary = () => {
                             Current Value{" "}
                             <span>
                                 {(currentValue / 1000).toFixed(2)}k
-                            </span>{" "}
+                            </span>
                         </p>
 
                         <p>
                             Investment{" "}
                             <span>
                                 {(totalInvestment / 1000).toFixed(2)}k
-                            </span>{" "}
+                            </span>
                         </p>
                     </div>
                 </div>
+
                 <hr className="divider" />
             </div>
         </>

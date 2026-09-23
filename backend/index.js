@@ -9,6 +9,7 @@ const bodyParser = require("body-parser");
 const { HoldingsModel } = require("./model/HoldingsModel");
 const { PositionsModel } = require("./model/PositionsModel");
 const { OrdersModel } = require("./model/OrdersModel");
+const { FundsModel } = require("./model/FundsModel.js");
 
 const PORT = process.env.PORT || 3002;
 const uri = process.env.MONGO_URL;
@@ -208,6 +209,26 @@ app.get("/allOrders", async (req, res) => {
 });
 
 
+app.get("/funds", async (req, res) => {
+    try {
+        let funds = await FundsModel.findOne();
+
+        if (!funds) {
+            funds = new FundsModel({
+                initialBalance: 100000,
+                availableCash: 100000,
+            });
+
+            await funds.save();
+        }
+
+        res.json(funds);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Something went wrong");
+    }
+});
+
 
 app.post("/newOrder", async (req, res) => {
     try {
@@ -222,7 +243,19 @@ app.post("/newOrder", async (req, res) => {
             product: "MIS",
         });
 
+        let funds = await FundsModel.findOne();
+
+        if (!funds) {
+            return res.status(500).send("Funds account not found");
+        }
+
         if (mode === "BUY") {
+            let orderValue = Number(qty) * Number(price);
+
+            if (orderValue > funds.availableCash) {
+                return res.status(400).send("Insufficient funds");
+            }
+
             let newOrder = new OrdersModel({
                 name: name,
                 qty: qty,
@@ -295,6 +328,11 @@ app.post("/newOrder", async (req, res) => {
                 }
             }
 
+            funds.availableCash =
+                funds.availableCash - orderValue;
+
+            await funds.save();
+
             return res.send("Buy order saved successfully");
         }
 
@@ -363,6 +401,13 @@ app.post("/newOrder", async (req, res) => {
                     await existingPosition.save();
                 }
             }
+
+            let orderValue = Number(qty) * Number(price);
+
+            funds.availableCash =
+                funds.availableCash + orderValue;
+
+            await funds.save();
 
             return res.send("Sell order saved successfully");
         }
