@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import "./Navbar.css";
 
 function NavBar() {
@@ -8,8 +8,43 @@ function NavBar() {
     const [showMenu, setShowMenu] = useState(false);
     const [showLoginMessage, setShowLoginMessage] = useState(false);
 
+    const location = useLocation();
+
     useEffect(() => {
         checkLoginStatus();
+    }, []);
+
+    useEffect(() => {
+        checkLoginStatus();
+        setShowMenu(false);
+        setShowLoginMessage(false);
+    }, [location.pathname]);
+
+    useEffect(() => {
+        if (!showLoginMessage) {
+            return;
+        }
+
+        const timer = setTimeout(() => {
+            setShowLoginMessage(false);
+        }, 5000);
+
+        return () => {
+            clearTimeout(timer);
+        };
+    }, [showLoginMessage]);
+
+    useEffect(() => {
+        const handleOutsideClick = () => {
+            setShowMenu(false);
+            setShowLoginMessage(false);
+        };
+
+        document.addEventListener("click", handleOutsideClick);
+
+        return () => {
+            document.removeEventListener("click", handleOutsideClick);
+        };
     }, []);
 
     const checkLoginStatus = async () => {
@@ -23,19 +58,26 @@ function NavBar() {
 
             if (response.ok) {
                 setIsLoggedIn(true);
+                return true;
             } else {
                 setIsLoggedIn(false);
+                return false;
             }
         } catch (error) {
             console.log(error);
             setIsLoggedIn(false);
+            return false;
         }
     };
 
-    const handleMenuClick = () => {
+    const handleMenuClick = async (event) => {
+        event.stopPropagation();
+
+        const loggedIn = await checkLoginStatus();
+
         setShowLoginMessage(false);
 
-        if (isLoggedIn) {
+        if (loggedIn) {
             setShowMenu(!showMenu);
         } else {
             setShowMenu(false);
@@ -52,6 +94,7 @@ function NavBar() {
 
             setIsLoggedIn(false);
             setShowMenu(false);
+
             window.location.href = "http://localhost:3000";
         } catch (error) {
             console.log(error);
@@ -67,6 +110,10 @@ function NavBar() {
         setShowMenu(false);
     };
 
+    const handleMenuBoxClick = (event) => {
+        event.stopPropagation();
+    };
+
     return (
         <nav
             className="navbar navbar-expand-lg navbar-light sticky-top"
@@ -75,6 +122,7 @@ function NavBar() {
                 borderBottom: "2px solid #f3f2f1",
             }}
         >
+
             <div className="container p-1">
 
                 <Link className="navbar-brand ms-1 mb-1" to="/">
@@ -173,6 +221,7 @@ function NavBar() {
                             className="nav-item me-4 mt-2"
                             style={{ position: "relative" }}
                         >
+
                             <i
                                 className="fa fa-bars fs-4"
                                 style={{
@@ -186,82 +235,44 @@ function NavBar() {
 
                             {showLoginMessage && (
                                 <div
-                                    style={{
-                                        position: "absolute",
-                                        top: "35px",
-                                        right: "0",
-                                        width: "260px",
-                                        padding: "12px",
-                                        backgroundColor: "#ffffff",
-                                        border: "1px solid #e5e5e5",
-                                        borderRadius: "6px",
-                                        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                                        fontSize: "13px",
-                                        color: "#555",
-                                        zIndex: 1000,
-                                    }}
+                                    className="login-required-message"
+                                    onClick={handleMenuBoxClick}
                                 >
-                                    You need to sign up / login first to
-                                    explore more.
+                                    <div className="login-required-icon">
+                                        <i className="fa fa-lock"></i>
+                                    </div>
+
+                                    <div>
+                                        <div className="login-required-title">
+                                            Login required
+                                        </div>
+
+                                        <div className="login-required-text">
+                                            Please sign up or login first to
+                                            explore more.
+                                        </div>
+                                    </div>
                                 </div>
                             )}
 
                             {showMenu && isLoggedIn && (
                                 <div
-                                    style={{
-                                        position: "absolute",
-                                        top: "35px",
-                                        right: "0",
-                                        width: "170px",
-                                        backgroundColor: "#ffffff",
-                                        border: "1px solid #e5e5e5",
-                                        borderRadius: "6px",
-                                        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                                        overflow: "hidden",
-                                        zIndex: 1000,
-                                    }}
+                                    className="navbar-profile-menu"
+                                    onClick={handleMenuBoxClick}
                                 >
-                                    <button
-                                        onClick={handleProfile}
-                                        style={{
-                                            width: "100%",
-                                            padding: "10px 14px",
-                                            border: "none",
-                                            backgroundColor: "#ffffff",
-                                            textAlign: "left",
-                                            cursor: "pointer",
-                                        }}
-                                    >
+
+                                    <button onClick={handleProfile}>
                                         My Profile
                                     </button>
 
-                                    <button
-                                        onClick={handleDashboard}
-                                        style={{
-                                            width: "100%",
-                                            padding: "10px 14px",
-                                            border: "none",
-                                            backgroundColor: "#ffffff",
-                                            textAlign: "left",
-                                            cursor: "pointer",
-                                        }}
-                                    >
+                                    <button onClick={handleDashboard}>
                                         My Dashboard
                                     </button>
 
-                                    <button
-                                        onClick={handleLogout}
-                                        style={{
-                                            width: "100%",
-                                            padding: "10px 14px",
-                                            border: "none",
-                                            backgroundColor: "#ffffff",
-                                            textAlign: "left",
-                                            cursor: "pointer",
-                                        }}
-                                    >
+                                    <button onClick={handleLogout}>
                                         Logout
                                     </button>
+
                                 </div>
                             )}
 
@@ -272,6 +283,7 @@ function NavBar() {
                 </div>
 
             </div>
+
         </nav>
     );
 }

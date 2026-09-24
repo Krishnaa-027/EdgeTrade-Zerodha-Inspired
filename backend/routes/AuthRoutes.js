@@ -178,7 +178,11 @@ router.get("/auth-status", async (req, res) => {
 });
 
 router.post("/logout", (req, res) => {
-    res.clearCookie("token");
+    res.clearCookie("token", {
+        httpOnly: true,
+        path: "/",
+    });
+
     res.send("Logout successful");
 });
 

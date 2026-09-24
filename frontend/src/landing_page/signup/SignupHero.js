@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 function SignupHero() {
 
     const [showLogin, setShowLogin] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const [signupData, setSignupData] = useState({
         name: "",
@@ -17,6 +18,44 @@ function SignupHero() {
     });
 
     const [message, setMessage] = useState("");
+
+    useEffect(() => {
+        checkLoginStatus();
+    }, []);
+
+    useEffect(() => {
+        if (!message) {
+            return;
+        }
+
+        const timer = setTimeout(() => {
+            setMessage("");
+        }, 4000);
+
+        return () => {
+            clearTimeout(timer);
+        };
+    }, [message]);
+
+    const checkLoginStatus = async () => {
+        try {
+            const response = await fetch(
+                "http://localhost:3002/auth-status",
+                {
+                    credentials: "include",
+                }
+            );
+
+            if (response.ok) {
+                setIsLoggedIn(true);
+            } else {
+                setIsLoggedIn(false);
+            }
+        } catch (error) {
+            console.log(error);
+            setIsLoggedIn(false);
+        }
+    };
 
     const handleSignupChange = (e) => {
         setSignupData({
@@ -124,6 +163,18 @@ function SignupHero() {
         }
     };
 
+    const handleSignupKeyDown = (e) => {
+        if (e.key === "Enter") {
+            handleSignup();
+        }
+    };
+
+    const handleLoginKeyDown = (e) => {
+        if (e.key === "Enter") {
+            handleLogin();
+        }
+    };
+
     const switchToSignup = () => {
         setShowLogin(false);
         setMessage("");
@@ -133,6 +184,69 @@ function SignupHero() {
         setShowLogin(true);
         setMessage("");
     };
+
+    if (isLoggedIn) {
+        return (
+            <>
+                <section className="signup-hero">
+
+                    <div className="signup-hero-content">
+
+                        <h1>You're already signed in</h1>
+
+                        <p>
+                            Your account is ready. Explore your account or
+                            continue exploring our platform.
+                        </p>
+
+                        <div className="signup-hero-row">
+
+                            <div className="signup-hero-image">
+
+                                <img
+                                    src="/media/images/SignupHeroImg_.png"
+                                    alt="Account"
+                                />
+
+                            </div>
+
+                            <div className="logged-in-account-box">
+
+                                <h2>Explore your account</h2>
+
+                                <p>
+                                    Manage your investments and view your
+                                    trading dashboard.
+                                </p>
+
+                                <div className="logged-in-account-buttons">
+
+                                    <a
+                                        href="http://localhost:3001"
+                                        className="signup-main-btn"
+                                    >
+                                        Go to Dashboard
+                                    </a>
+
+                                    <a
+                                        href="/products"
+                                        className="signup-outline-btn"
+                                    >
+                                        Explore Platform
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+            </>
+        );
+    }
 
     return (
         <>
@@ -187,7 +301,13 @@ function SignupHero() {
                             </div>
 
                             {!showLogin ? (
-                                <>
+                                <form
+                                    onSubmit={(e) => {
+                                        e.preventDefault();
+                                        handleSignup();
+                                    }}
+                                >
+
                                     <h2>Create your account</h2>
 
                                     <p className="signup-form-text">
@@ -243,14 +363,14 @@ function SignupHero() {
                                     </div>
 
                                     <button
+                                        type="submit"
                                         className="signup-main-btn"
-                                        onClick={handleSignup}
                                     >
                                         Create Account
                                     </button>
 
                                     {message && (
-                                        <p className="signup-form-text">
+                                        <p className="signup-error-message">
                                             {message}
                                         </p>
                                     )}
@@ -259,9 +379,16 @@ function SignupHero() {
                                         By proceeding, you agree to our terms &
                                         privacy policy.
                                     </p>
-                                </>
+
+                                </form>
                             ) : (
-                                <>
+                                <form
+                                    onSubmit={(e) => {
+                                        e.preventDefault();
+                                        handleLogin();
+                                    }}
+                                >
+
                                     <h2>Welcome back</h2>
 
                                     <p className="signup-form-text">
@@ -293,14 +420,14 @@ function SignupHero() {
                                     </div>
 
                                     <button
+                                        type="submit"
                                         className="signup-main-btn"
-                                        onClick={handleLogin}
                                     >
                                         Login
                                     </button>
 
                                     {message && (
-                                        <p className="signup-form-text">
+                                        <p className="signup-error-message">
                                             {message}
                                         </p>
                                     )}
@@ -308,7 +435,8 @@ function SignupHero() {
                                     <p className="signup-terms">
                                         Login to access your trading dashboard.
                                     </p>
-                                </>
+
+                                </form>
                             )}
 
                         </div>

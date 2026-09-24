@@ -44,7 +44,6 @@
     display: block;
 }
 
-
 .signup-form-box {
     width: 380px;
     padding: 20px 25px;
@@ -163,4 +162,90 @@
 
 .existing-account-section a:hover {
     text-decoration: underline;
+}
+
+.logged-in-account-box {
+    flex: 0 0 380px;
+    padding: 30px 25px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    text-align: left;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.logged-in-account-box h2 {
+    font-size: 24px;
+    font-weight: 500;
+    color: #424242;
+    margin-bottom: 8px;
+}
+
+.logged-in-account-box p {
+    color: #666;
+    font-size: 15px;
+    margin-bottom: 25px;
+}
+
+.logged-in-account-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.logged-in-account-buttons .signup-main-btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    text-decoration: none;
+    box-sizing: border-box;
+    margin-top: 0;
+}
+
+.signup-outline-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #387ed1;
+    border-radius: 4px;
+    color: #387ed1;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.signup-outline-btn:hover {
+    background-color: #f5f9ff;
+}
+
+.signup-error-message {
+    color: #dc3545;
+    font-size: 13px;
+    margin-top: 12px;
+    margin-bottom: 0;
+    text-align: left;
+}
+
+.signup-explore-section {
+    text-align: center;
+    padding: 70px 20px 90px;
+}
+
+.signup-explore-section h2 {
+    font-size: 28px;
+    font-weight: 500;
+    color: #424242;
+    margin-bottom: 12px;
+}
+
+.signup-explore-section p {
+    color: #666666;
+    font-size: 16px;
+    margin-bottom: 25px;
+}
+
+.signup-explore-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
 }
