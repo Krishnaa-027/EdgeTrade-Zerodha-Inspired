@@ -1,0 +1,66 @@
+.signup-faq-section {
+    padding: 60px 0 70px;
+    background-color: #fafafb;
+}
+
+.signup-faq-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.signup-faq-container h2 {
+    font-size: 32px;
+    font-weight: 500;
+    color: #424242;
+    margin-bottom: 50px;
+}
+
+.signup-faq-list {
+    width: 100%;
+}
+
+.signup-faq-item {
+    border-top: 1px solid #ddd;
+}
+
+.signup-faq-item:last-child {
+    border-bottom: 1px solid #ddd;
+}
+
+.signup-faq-item button {
+    width: 100%;
+    border: none;
+    background: transparent;
+    padding: 10px 0 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+    font-size: 16.5px;
+    font-weight: 600;
+    color: #333;
+    cursor: pointer;
+}
+
+.signup-faq-item button span:first-child {
+    padding-right: 20px;
+}
+
+.signup-faq-item .faq-arrow {
+    font-size: 20px;
+    font-weight: 400;
+    color: #636363;
+    flex-shrink: 0;
+    width: 20px;
+    text-align: center;
+    margin-right: 15px;
+}
+
+.signup-faq-item p {
+    margin: 0;
+    padding: 0 40px 18px 0;
+    font-size: 15px;
+    line-height: 1.8;
+    color: #414141;
+}

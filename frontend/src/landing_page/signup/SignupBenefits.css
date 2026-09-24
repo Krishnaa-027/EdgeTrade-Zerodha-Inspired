@@ -1,0 +1,76 @@
+.signup-benefits-section {
+    padding: 110px 0 70px;
+    background-color: #fff;
+}
+
+.signup-benefits-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 80px;
+}
+
+.signup-benefits-left {
+    width: 50%;
+    position: relative;
+    top: -45px;
+}
+
+.signup-benefits-image {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.signup-benefits-image img {
+    width: 100%;
+    max-width: 450px;
+    height: auto;
+    display: block;
+}
+
+.signup-benefits-heading {
+    margin-top: 30px;
+}
+
+.signup-benefits-heading h2 {
+    font-size: 25px;
+    font-weight: 500;
+    line-height: 1.4;
+    color: #424242;
+    margin: 0;
+    white-space: nowrap;
+}
+
+.signup-benefits-right {
+    width: 50%;
+}
+
+.signup-benefit {
+    padding: 22px 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.signup-benefit:first-child {
+    padding-top: 0;
+}
+
+.signup-benefit:last-child {
+    border-bottom: none;
+}
+
+.signup-benefit h3 {
+    font-size: 20px;
+    font-weight: 500;
+    color: #424242;
+    margin-bottom: 12px;
+}
+
+.signup-benefit p {
+    font-size: 15px;
+    line-height: 1.8;
+    color: #666;
+    margin: 0;
+}

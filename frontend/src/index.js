@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import HomePage from "./landing_page/home/Homepage";
-import Signup from "./landing_page/signup/Signup";
+import SignupPage from "./landing_page/signup/SignupPage";
 import AboutPage from "./landing_page/about/AboutPage";
 import ProductPage from "./landing_page/products/ProductPage";
 import PricingPage from "./landing_page/pricing/PricingPage";
@@ -30,7 +30,7 @@ root.render(
         <NavBar/>
         <Routes>
             <Route path="/" element={<HomePage/>} />
-            <Route path="/signup" element={<Signup/>} />
+            <Route path="/signup" element={<SignupPage/>} />
             <Route path="/about" element={<AboutPage/>} />
             <Route path="/products" element={<ProductPage/>} />
             <Route path="/pricing" element={<PricingPage/>} />

@@ -1,0 +1,166 @@
+.signup-hero {
+    padding: 70px 0 80px;
+    background-color: #fff;
+}
+
+.signup-hero-content {
+    max-width: 1100px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.signup-hero-content h1 {
+    font-size: 38px;
+    font-weight: 500;
+    color: #424242;
+    margin-bottom: 15px;
+}
+
+.signup-hero-content > p {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 65px;
+}
+
+.signup-hero-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 45px;
+    text-align: left;
+}
+
+.signup-hero-image {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.signup-hero-image img {
+    width: 100%;
+    max-width: 700px;
+    height: auto;
+    display: block;
+}
+
+
+.signup-form-box {
+    width: 380px;
+    padding: 20px 25px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    text-align: left;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.signup-form-header {
+    display: flex;
+    border-bottom: 1px solid #e0e0e0;
+    margin-bottom: 30px;
+}
+
+.signup-tab {
+    border: none;
+    background: transparent;
+    padding: 12px 18px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #424242;
+    cursor: pointer;
+}
+
+.signup-tab.active {
+    color: #222;
+    border-bottom: 2px solid #387ed1;
+}
+
+.signup-form-box h2 {
+    font-size: 24px;
+    font-weight: 500;
+    color: #424242;
+    margin-bottom: 8px;
+}
+
+.signup-form-text {
+    color: #666;
+    font-size: 15px;
+    margin-bottom: 25px;
+}
+
+.signup-input-group {
+    margin-bottom: 18px;
+}
+
+.signup-input-group label {
+    display: block;
+    font-size: 14px;
+    color: #424242;
+    margin-bottom: 7px;
+}
+
+.signup-input-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d8d8d8;
+    border-radius: 4px;
+    font-size: 15px;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.signup-input-group input:focus {
+    border-color: #387ed1;
+}
+
+.signup-main-btn {
+    width: 100%;
+    padding: 12px;
+    margin-top: 5px;
+    border: none;
+    border-radius: 4px;
+    background-color: #387ed1;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.signup-main-btn:hover {
+    background-color: #2f6fba;
+}
+
+.signup-terms {
+    text-align: center;
+    font-size: 12px;
+    color: #888;
+    margin-top: 18px;
+    margin-bottom: 0;
+}
+
+.existing-account-section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 30px 60px 110px;
+    text-align: center;
+}
+
+.existing-account-section h2 {
+    font-size: 27px;
+    font-weight: 500;
+    color: #424242;
+    margin-bottom: 15px;
+}
+
+.existing-account-section p {
+    font-size: 16px;
+    color: #666;
+}
+
+.existing-account-section a {
+    color: #387ed1;
+    text-decoration: none;
+}
+
+.existing-account-section a:hover {
+    text-decoration: underline;
+}
