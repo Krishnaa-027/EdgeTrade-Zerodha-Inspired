@@ -5,15 +5,15 @@ const mongoose = require("mongoose");
 
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
+
+const { router: authRouter } = require("./routes/AuthRoutes");
+const { authMiddleware } = require("./middleware/AuthMiddleware");
 
 const { HoldingsModel } = require("./model/HoldingsModel");
 const { PositionsModel } = require("./model/PositionsModel");
 const { OrdersModel } = require("./model/OrdersModel");
 const { FundsModel } = require("./model/FundsModel.js");
-const { UserModel } = require("./model/UserModel.js");
 
 const PORT = process.env.PORT || 3002;
 const uri = process.env.MONGO_URL;
@@ -28,118 +28,16 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use(cookieParser());
 
+app.use("/", authRouter);
 
-app.post("/signup", async (req, res) => {
+
+app.get("/allHoldings", authMiddleware, async (req, res) => {
     try {
-        const { name, email, password } = req.body;
-
-        if (!name || !email || !password) {
-            return res.status(400).send("All fields are required");
-        }
-
-        const existingUser = await UserModel.findOne({
-            email: email,
+        let allHoldings = await HoldingsModel.find({
+            userId: req.userId,
         });
 
-        if (existingUser) {
-            return res.status(400).send("Email already registered");
-        }
-
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        const newUser = new UserModel({
-            name: name,
-            email: email,
-            password: hashedPassword,
-        });
-
-        await newUser.save();
-
-        const token = jwt.sign(
-            {
-                id: newUser._id,
-            },
-            process.env.JWT_SECRET,
-            {
-                expiresIn: "1d",
-            }
-        );
-
-        res.cookie("token", token, {
-            httpOnly: true,
-            sameSite: "lax",
-            secure: false,
-        });
-
-
-        const totalUsers = await UserModel.countDocuments();
-
-        if (totalUsers === 1) {
-
-            await FundsModel.updateMany(
-                { userId: { $exists: false } },
-                {
-                    $set: {
-                        userId: newUser._id,
-                    },
-                }
-            );
-
-            await HoldingsModel.updateMany(
-                { userId: { $exists: false } },
-                {
-                    $set: {
-                        userId: newUser._id,
-                    },
-                }
-            );
-
-            await OrdersModel.updateMany(
-                { userId: { $exists: false } },
-                {
-                    $set: {
-                        userId: newUser._id,
-                    },
-                }
-            );
-
-            await PositionsModel.updateMany(
-                { userId: { $exists: false } },
-                {
-                    $set: {
-                        userId: newUser._id,
-                    },
-                }
-            );
-
-            const existingFunds = await FundsModel.findOne({
-                userId: newUser._id,
-            });
-
-            if (!existingFunds) {
-                const newFunds = new FundsModel({
-                    userId: newUser._id,
-                    initialBalance: 100000,
-                    availableCash: 100000,
-                });
-
-                await newFunds.save();
-            }
-
-        } else {
-
-            const newFunds = new FundsModel({
-                userId: newUser._id,
-                initialBalance: 100000,
-                availableCash: 100000,
-            });
-
-            await newFunds.save();
-        }
-
-
-        res.status(201).send("Signup successful");
-
+        res.json(allHoldings);
     } catch (error) {
         console.log(error);
         res.status(500).send("Something went wrong");
@@ -147,30 +45,43 @@ app.post("/signup", async (req, res) => {
 });
 
 
-app.get("/allHoldings", async (req, res) => {
-    let allHoldings = await HoldingsModel.find({});
-    res.json(allHoldings);
-});
-
-
-app.get("/allPositions", async (req, res) => {
-    let allPositions = await PositionsModel.find({});
-    res.json(allPositions);
-});
-
-
-app.get("/allOrders", async (req, res) => {
-    let allOrders = await OrdersModel.find({});
-    res.send(allOrders);
-});
-
-
-app.get("/funds", async (req, res) => {
+app.get("/allPositions", authMiddleware, async (req, res) => {
     try {
-        let funds = await FundsModel.findOne();
+        let allPositions = await PositionsModel.find({
+            userId: req.userId,
+        });
+
+        res.json(allPositions);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Something went wrong");
+    }
+});
+
+
+app.get("/allOrders", authMiddleware, async (req, res) => {
+    try {
+        let allOrders = await OrdersModel.find({
+            userId: req.userId,
+        });
+
+        res.json(allOrders);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Something went wrong");
+    }
+});
+
+
+app.get("/funds", authMiddleware, async (req, res) => {
+    try {
+        let funds = await FundsModel.findOne({
+            userId: req.userId,
+        });
 
         if (!funds) {
             funds = new FundsModel({
+                userId: req.userId,
                 initialBalance: 100000,
                 availableCash: 100000,
             });
@@ -186,20 +97,24 @@ app.get("/funds", async (req, res) => {
 });
 
 
-app.post("/newOrder", async (req, res) => {
+app.post("/newOrder", authMiddleware, async (req, res) => {
     try {
         const { name, qty, price, mode, product } = req.body;
 
         let existingHolding = await HoldingsModel.findOne({
+            userId: req.userId,
             name: name,
         });
 
         let existingPosition = await PositionsModel.findOne({
+            userId: req.userId,
             name: name,
             product: "MIS",
         });
 
-        let funds = await FundsModel.findOne();
+        let funds = await FundsModel.findOne({
+            userId: req.userId,
+        });
 
         if (!funds) {
             return res.status(500).send("Funds account not found");
@@ -213,6 +128,7 @@ app.post("/newOrder", async (req, res) => {
             }
 
             let newOrder = new OrdersModel({
+                userId: req.userId,
                 name: name,
                 qty: qty,
                 price: price,
@@ -240,6 +156,7 @@ app.post("/newOrder", async (req, res) => {
                     await existingHolding.save();
                 } else {
                     let newHolding = new HoldingsModel({
+                        userId: req.userId,
                         name: name,
                         qty: Number(qty),
                         avg: Number(price),
@@ -270,6 +187,7 @@ app.post("/newOrder", async (req, res) => {
                     await existingPosition.save();
                 } else {
                     let newPosition = new PositionsModel({
+                        userId: req.userId,
                         product: "MIS",
                         name: name,
                         qty: Number(qty),
@@ -291,6 +209,7 @@ app.post("/newOrder", async (req, res) => {
 
             return res.send("Buy order saved successfully");
         }
+
 
         if (mode === "SELL") {
             if (product === "CNC") {
@@ -316,6 +235,7 @@ app.post("/newOrder", async (req, res) => {
             }
 
             let newOrder = new OrdersModel({
+                userId: req.userId,
                 name: name,
                 qty: qty,
                 price: price,
@@ -331,6 +251,7 @@ app.post("/newOrder", async (req, res) => {
 
                 if (newQty === 0) {
                     await HoldingsModel.deleteOne({
+                        userId: req.userId,
                         name: name,
                     });
                 } else {
@@ -347,6 +268,7 @@ app.post("/newOrder", async (req, res) => {
 
                 if (newQty === 0) {
                     await PositionsModel.deleteOne({
+                        userId: req.userId,
                         name: name,
                         product: "MIS",
                     });

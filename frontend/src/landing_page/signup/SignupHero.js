@@ -4,6 +4,120 @@ function SignupHero() {
 
     const [showLogin, setShowLogin] = useState(false);
 
+    const [signupData, setSignupData] = useState({
+        name: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+    });
+
+    const [loginData, setLoginData] = useState({
+        email: "",
+        password: "",
+    });
+
+    const [message, setMessage] = useState("");
+
+    const handleSignupChange = (e) => {
+        setSignupData({
+            ...signupData,
+            [e.target.name]: e.target.value,
+        });
+    };
+
+    const handleLoginChange = (e) => {
+        setLoginData({
+            ...loginData,
+            [e.target.name]: e.target.value,
+        });
+    };
+
+    const handleSignup = async () => {
+        const { name, email, password, confirmPassword } = signupData;
+
+        if (!name || !email || !password || !confirmPassword) {
+            setMessage("Please fill all the fields");
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            setMessage("Passwords do not match");
+            return;
+        }
+
+        try {
+            const response = await fetch("http://localhost:3002/signup", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                credentials: "include",
+                body: JSON.stringify({
+                    name,
+                    email,
+                    password,
+                }),
+            });
+
+            const data = await response.text();
+
+            if (!response.ok) {
+                setMessage(data);
+                return;
+            }
+
+            setMessage("Signup successful! You are now logged in.");
+        } catch (error) {
+            console.log(error);
+            setMessage("Something went wrong. Please try again.");
+        }
+    };
+
+    const handleLogin = async () => {
+        const { email, password } = loginData;
+
+        if (!email || !password) {
+            setMessage("Please enter email and password");
+            return;
+        }
+
+        try {
+            const response = await fetch("http://localhost:3002/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                credentials: "include",
+                body: JSON.stringify({
+                    email,
+                    password,
+                }),
+            });
+
+            const data = await response.text();
+
+            if (!response.ok) {
+                setMessage(data);
+                return;
+            }
+
+            setMessage("Login successful!");
+        } catch (error) {
+            console.log(error);
+            setMessage("Something went wrong. Please try again.");
+        }
+    };
+
+    const switchToSignup = () => {
+        setShowLogin(false);
+        setMessage("");
+    };
+
+    const switchToLogin = () => {
+        setShowLogin(true);
+        setMessage("");
+    };
+
     return (
         <>
             <section className="signup-hero">
@@ -33,15 +147,23 @@ function SignupHero() {
                             <div className="signup-form-header">
 
                                 <button
-                                    className={!showLogin ? "signup-tab active" : "signup-tab"}
-                                    onClick={() => setShowLogin(false)}
+                                    className={
+                                        !showLogin
+                                            ? "signup-tab active"
+                                            : "signup-tab"
+                                    }
+                                    onClick={switchToSignup}
                                 >
                                     Signup
                                 </button>
 
                                 <button
-                                    className={showLogin ? "signup-tab active" : "signup-tab"}
-                                    onClick={() => setShowLogin(true)}
+                                    className={
+                                        showLogin
+                                            ? "signup-tab active"
+                                            : "signup-tab"
+                                    }
+                                    onClick={switchToLogin}
                                 >
                                     Login
                                 </button>
@@ -61,7 +183,10 @@ function SignupHero() {
 
                                         <input
                                             type="text"
+                                            name="name"
                                             placeholder="Enter your name"
+                                            value={signupData.name}
+                                            onChange={handleSignupChange}
                                         />
                                     </div>
 
@@ -70,7 +195,10 @@ function SignupHero() {
 
                                         <input
                                             type="email"
+                                            name="email"
                                             placeholder="Enter your email"
+                                            value={signupData.email}
+                                            onChange={handleSignupChange}
                                         />
                                     </div>
 
@@ -79,7 +207,10 @@ function SignupHero() {
 
                                         <input
                                             type="password"
+                                            name="password"
                                             placeholder="Enter your password"
+                                            value={signupData.password}
+                                            onChange={handleSignupChange}
                                         />
                                     </div>
 
@@ -88,13 +219,25 @@ function SignupHero() {
 
                                         <input
                                             type="password"
+                                            name="confirmPassword"
                                             placeholder="Confirm your password"
+                                            value={signupData.confirmPassword}
+                                            onChange={handleSignupChange}
                                         />
                                     </div>
 
-                                    <button className="signup-main-btn">
+                                    <button
+                                        className="signup-main-btn"
+                                        onClick={handleSignup}
+                                    >
                                         Create Account
                                     </button>
+
+                                    {message && (
+                                        <p className="signup-form-text">
+                                            {message}
+                                        </p>
+                                    )}
 
                                     <p className="signup-terms">
                                         By proceeding, you agree to our terms &
@@ -114,7 +257,10 @@ function SignupHero() {
 
                                         <input
                                             type="email"
+                                            name="email"
                                             placeholder="Enter your email"
+                                            value={loginData.email}
+                                            onChange={handleLoginChange}
                                         />
                                     </div>
 
@@ -123,13 +269,25 @@ function SignupHero() {
 
                                         <input
                                             type="password"
+                                            name="password"
                                             placeholder="Enter your password"
+                                            value={loginData.password}
+                                            onChange={handleLoginChange}
                                         />
                                     </div>
 
-                                    <button className="signup-main-btn">
+                                    <button
+                                        className="signup-main-btn"
+                                        onClick={handleLogin}
+                                    >
                                         Login
                                     </button>
+
+                                    {message && (
+                                        <p className="signup-form-text">
+                                            {message}
+                                        </p>
+                                    )}
 
                                     <p className="signup-terms">
                                         Login to access your trading dashboard.
