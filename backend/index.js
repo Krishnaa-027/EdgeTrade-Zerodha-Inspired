@@ -21,7 +21,10 @@ const uri = process.env.MONGO_URL;
 const app = express();
 
 app.use(cors({
-    origin: "http://localhost:3000",
+    origin: [
+        "http://localhost:3000",
+        "http://localhost:3001",
+    ],
     credentials: true,
 }));
 
@@ -29,7 +32,6 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 app.use("/", authRouter);
-
 
 app.get("/allHoldings", authMiddleware, async (req, res) => {
     try {
@@ -44,7 +46,6 @@ app.get("/allHoldings", authMiddleware, async (req, res) => {
     }
 });
 
-
 app.get("/allPositions", authMiddleware, async (req, res) => {
     try {
         let allPositions = await PositionsModel.find({
@@ -58,7 +59,6 @@ app.get("/allPositions", authMiddleware, async (req, res) => {
     }
 });
 
-
 app.get("/allOrders", authMiddleware, async (req, res) => {
     try {
         let allOrders = await OrdersModel.find({
@@ -71,7 +71,6 @@ app.get("/allOrders", authMiddleware, async (req, res) => {
         res.status(500).send("Something went wrong");
     }
 });
-
 
 app.get("/funds", authMiddleware, async (req, res) => {
     try {
@@ -95,7 +94,6 @@ app.get("/funds", authMiddleware, async (req, res) => {
         res.status(500).send("Something went wrong");
     }
 });
-
 
 app.post("/newOrder", authMiddleware, async (req, res) => {
     try {
@@ -210,7 +208,6 @@ app.post("/newOrder", authMiddleware, async (req, res) => {
             return res.send("Buy order saved successfully");
         }
 
-
         if (mode === "SELL") {
             if (product === "CNC") {
                 if (!existingHolding) {
@@ -228,9 +225,7 @@ app.post("/newOrder", authMiddleware, async (req, res) => {
                 }
 
                 if (Number(qty) > existingPosition.qty) {
-                    return res
-                        .status(400)
-                        .send("Not enough quantity in position");
+                    return res.status(400).send("Not enough quantity in position");
                 }
             }
 
@@ -296,7 +291,6 @@ app.post("/newOrder", authMiddleware, async (req, res) => {
         res.status(500).send("Something went wrong");
     }
 });
-
 
 app.listen(PORT, () => {
     console.log(`App started on port ${PORT}`);

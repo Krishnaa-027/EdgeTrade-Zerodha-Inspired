@@ -118,7 +118,10 @@ router.post("/login", async (req, res) => {
             return res.status(400).send("Invalid email or password");
         }
 
-        const isPasswordCorrect = await bcrypt.compare(password, user.password);
+        const isPasswordCorrect = await bcrypt.compare(
+            password,
+            user.password,
+        );
 
         if (!isPasswordCorrect) {
             return res.status(400).send("Invalid email or password");
@@ -143,6 +146,34 @@ router.post("/login", async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(500).send("Something went wrong");
+    }
+});
+
+router.get("/auth-status", async (req, res) => {
+    try {
+        const token = req.cookies.token;
+
+        if (!token) {
+            return res.status(401).send("Not logged in");
+        }
+
+        const decoded = jwt.verify(
+            token,
+            process.env.JWT_SECRET,
+        );
+
+        const user = await UserModel.findById(decoded.id);
+
+        if (!user) {
+            return res.status(401).send("User not found");
+        }
+
+        res.json({
+            name: user.name,
+            email: user.email,
+        });
+    } catch (error) {
+        return res.status(401).send("Not logged in");
     }
 });
 

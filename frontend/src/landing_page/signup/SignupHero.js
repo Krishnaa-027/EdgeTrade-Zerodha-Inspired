@@ -66,7 +66,16 @@ function SignupHero() {
                 return;
             }
 
-            setMessage("Signup successful! You are now logged in.");
+            setSignupData({
+                name: "",
+                email: "",
+                password: "",
+                confirmPassword: "",
+            });
+
+            setMessage("");
+
+            window.location.href = "http://localhost:3001";
         } catch (error) {
             console.log(error);
             setMessage("Something went wrong. Please try again.");
@@ -101,7 +110,14 @@ function SignupHero() {
                 return;
             }
 
-            setMessage("Login successful!");
+            setLoginData({
+                email: "",
+                password: "",
+            });
+
+            setMessage("");
+
+            window.location.href = "http://localhost:3001";
         } catch (error) {
             console.log(error);
             setMessage("Something went wrong. Please try again.");
