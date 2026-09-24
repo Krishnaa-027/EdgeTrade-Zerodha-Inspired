@@ -6,119 +6,129 @@ import axios from "axios";
 import GeneralContext from "./GeneralContext";
 
 const Funds = () => {
-  const [funds, setFunds] = useState(null);
+    const [funds, setFunds] = useState(null);
 
-  const { fundsRefresh } = useContext(GeneralContext);
+    const { fundsRefresh } = useContext(GeneralContext);
 
-  useEffect(() => {
-    axios.get("http://localhost:3002/funds").then((res) => {
-      setFunds(res.data);
-    });
-  }, [fundsRefresh]);
+    useEffect(() => {
+        axios.get("http://localhost:3002/funds", {
+            withCredentials: true,
+        }).then((res) => {
+            setFunds(res.data);
+        });
+    }, [fundsRefresh]);
 
-  return (
-    <>
-      <div className="funds">
-        <p>Instant, zero-cost fund transfers with UPI </p>
-        <Link className="btn btn-green">Add funds</Link>
-        <Link className="btn btn-blue">Withdraw</Link>
-      </div>
-
-      <div className="row">
-        <div className="col">
-          <span>
-            <p>Equity</p>
-          </span>
-
-          <div className="table">
-            <div className="data">
-              <p>Available margin</p>
-              <p className="imp colored">
-                {funds ? funds.availableCash.toFixed(2) : "0.00"}
-              </p>
+    return (
+        <>
+            <div className="funds">
+                <p>Instant, zero-cost fund transfers with UPI </p>
+                <Link className="btn btn-green">Add funds</Link>
+                <Link className="btn btn-blue">Withdraw</Link>
             </div>
 
-            <div className="data">
-              <p>Used margin</p>
-              <p className="imp">0.00</p>
+            <div className="row">
+                <div className="col">
+                    <span>
+                        <p>Equity</p>
+                    </span>
+
+                    <div className="table">
+                        <div className="data">
+                            <p>Available margin</p>
+                            <p className="imp colored">
+                                {funds
+                                    ? funds.availableCash.toFixed(2)
+                                    : "0.00"}
+                            </p>
+                        </div>
+
+                        <div className="data">
+                            <p>Used margin</p>
+                            <p className="imp">0.00</p>
+                        </div>
+
+                        <div className="data">
+                            <p>Available cash</p>
+                            <p className="imp">
+                                {funds
+                                    ? funds.availableCash.toFixed(2)
+                                    : "0.00"}
+                            </p>
+                        </div>
+
+                        <hr />
+
+                        <div className="data">
+                            <p>Opening Balance</p>
+                            <p>
+                                {funds
+                                    ? funds.initialBalance.toFixed(2)
+                                    : "0.00"}
+                            </p>
+                        </div>
+
+                        <div className="data">
+                            <p>Opening Balance</p>
+                            <p>
+                                {funds
+                                    ? funds.initialBalance.toFixed(2)
+                                    : "0.00"}
+                            </p>
+                        </div>
+
+                        <div className="data">
+                            <p>Payin</p>
+                            <p>0.00</p>
+                        </div>
+
+                        <div className="data">
+                            <p>SPAN</p>
+                            <p>0.00</p>
+                        </div>
+
+                        <div className="data">
+                            <p>Delivery margin</p>
+                            <p>0.00</p>
+                        </div>
+
+                        <div className="data">
+                            <p>Exposure</p>
+                            <p>0.00</p>
+                        </div>
+
+                        <div className="data">
+                            <p>Options premium</p>
+                            <p>0.00</p>
+                        </div>
+
+                        <hr />
+
+                        <div className="data">
+                            <p>Collateral (Liquid funds)</p>
+                            <p>0.00</p>
+                        </div>
+
+                        <div className="data">
+                            <p>Collateral (Equity)</p>
+                            <p>0.00</p>
+                        </div>
+
+                        <div className="data">
+                            <p>Total Collateral</p>
+                            <p>0.00</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="col">
+                    <div className="commodity">
+                        <p>You don't have a commodity account</p>
+                        <Link className="btn btn-blue">Open Account</Link>
+                    </div>
+                </div>
             </div>
-
-            <div className="data">
-              <p>Available cash</p>
-              <p className="imp">
-                {funds ? funds.availableCash.toFixed(2) : "0.00"}
-              </p>
-            </div>
-
-            <hr />
-
-            <div className="data">
-              <p>Opening Balance</p>
-              <p>
-                {funds ? funds.initialBalance.toFixed(2) : "0.00"}
-              </p>
-            </div>
-
-            <div className="data">
-              <p>Opening Balance</p>
-              <p>
-                {funds ? funds.initialBalance.toFixed(2) : "0.00"}
-              </p>
-            </div>
-
-            <div className="data">
-              <p>Payin</p>
-              <p>0.00</p>
-            </div>
-
-            <div className="data">
-              <p>SPAN</p>
-              <p>0.00</p>
-            </div>
-
-            <div className="data">
-              <p>Delivery margin</p>
-              <p>0.00</p>
-            </div>
-
-            <div className="data">
-              <p>Exposure</p>
-              <p>0.00</p>
-            </div>
-
-            <div className="data">
-              <p>Options premium</p>
-              <p>0.00</p>
-            </div>
-
-            <hr />
-
-            <div className="data">
-              <p>Collateral (Liquid funds)</p>
-              <p>0.00</p>
-            </div>
-
-            <div className="data">
-              <p>Collateral (Equity)</p>
-              <p>0.00</p>
-            </div>
-
-            <div className="data">
-              <p>Total Collateral</p>
-              <p>0.00</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="col">
-          <div className="commodity">
-            <p>You don't have a commodity account</p>
-            <Link className="btn btn-blue">Open Account</Link>
-          </div>
-        </div>
-      </div>
-    </>
-  );
+        </>
+    );
 };
 
 export default Funds;

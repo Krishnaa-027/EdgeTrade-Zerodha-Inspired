@@ -10,7 +10,9 @@ const Holdings = () => {
     const { holdingsRefresh } = useContext(GeneralContext);
 
     useEffect(() => {
-        axios.get("http://localhost:3002/allHoldings").then((res) => {
+        axios.get("http://localhost:3002/allHoldings", {
+            withCredentials: true,
+        }).then((res) => {
             setAllHoldings(res.data);
         });
     }, [holdingsRefresh]);
