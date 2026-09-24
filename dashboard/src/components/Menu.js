@@ -170,12 +170,14 @@ const Menu = () => {
                     {isProfileDropdownOpen && (
                         <div className="profile-dropdown">
 
-                            <div
+                            <Link
+                                to="/profile"
                                 className="profile-dropdown-item"
                                 onClick={() => setIsProfileDropdownOpen(false)}
+                                style={{ textDecoration: "none" }}
                             >
                                 My Profile
-                            </div>
+                            </Link>
 
                             <div
                                 className="profile-dropdown-item"

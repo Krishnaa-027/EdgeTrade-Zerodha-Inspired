@@ -1,14 +1,39 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import axios from "axios";
+import {
+    BrowserRouter,
+    Route,
+    Routes,
+    useLocation,
+} from "react-router-dom";
+
 import "./index.css";
 import Home from "./components/Home";
+import Profile from "./components/Profile";
 import { GeneralContextProvider } from "./components/GeneralContext";
+
+axios.interceptors.response.use(
+    (response) => {
+        return response;
+    },
+    (error) => {
+        if (error.response && error.response.status === 401) {
+            window.location.href = "http://localhost:3000/signup";
+
+            return new Promise(() => {});
+        }
+
+        return Promise.reject(error);
+    }
+);
 
 function ProtectedDashboard() {
 
     const [isCheckingAuth, setIsCheckingAuth] = useState(true);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    const location = useLocation();
 
     useEffect(() => {
         checkLoginStatus();
@@ -44,17 +69,26 @@ function ProtectedDashboard() {
         return null;
     }
 
+    if (location.pathname === "/profile") {
+        return <Profile />;
+    }
+
     return <Home />;
 }
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
+const root = ReactDOM.createRoot(
+    document.getElementById("root")
+);
 
 root.render(
     <React.StrictMode>
         <BrowserRouter>
             <GeneralContextProvider>
                 <Routes>
-                    <Route path="/*" element={<ProtectedDashboard />} />
+                    <Route
+                        path="/*"
+                        element={<ProtectedDashboard />}
+                    />
                 </Routes>
             </GeneralContextProvider>
         </BrowserRouter>

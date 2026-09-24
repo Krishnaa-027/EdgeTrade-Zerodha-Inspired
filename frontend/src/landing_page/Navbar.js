@@ -108,6 +108,7 @@ function NavBar() {
 
     const handleProfile = () => {
         setShowMenu(false);
+        window.location.href = "http://localhost:3001/profile";
     };
 
     const handleMenuBoxClick = (event) => {

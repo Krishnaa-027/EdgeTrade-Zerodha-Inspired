@@ -177,6 +177,92 @@ router.get("/auth-status", async (req, res) => {
     }
 });
 
+router.get("/profile", async (req, res) => {
+    try {
+        const token = req.cookies.token;
+
+        if (!token) {
+            return res.status(401).send("Not logged in");
+        }
+
+        const decoded = jwt.verify(
+            token,
+            process.env.JWT_SECRET,
+        );
+
+        const user = await UserModel.findById(decoded.id);
+
+        if (!user) {
+            return res.status(401).send("User not found");
+        }
+
+        res.json({
+            name: user.name,
+            email: user.email,
+            mobile: user.mobile,
+            dateOfBirth: user.dateOfBirth,
+            address: user.address,
+            city: user.city,
+            state: user.state,
+            pincode: user.pincode,
+            accountType: "Individual",
+            accountStatus: "Active",
+        });
+    } catch (error) {
+        return res.status(401).send("Not logged in");
+    }
+});
+
+router.put("/profile", async (req, res) => {
+    try {
+        const token = req.cookies.token;
+
+        if (!token) {
+            return res.status(401).send("Not logged in");
+        }
+
+        const decoded = jwt.verify(
+            token,
+            process.env.JWT_SECRET,
+        );
+
+        const user = await UserModel.findById(decoded.id);
+
+        if (!user) {
+            return res.status(401).send("User not found");
+        }
+
+        const {
+            name,
+            mobile,
+            dateOfBirth,
+            address,
+            city,
+            state,
+            pincode,
+        } = req.body;
+
+        if (!name) {
+            return res.status(400).send("Name is required");
+        }
+
+        user.name = name;
+        user.mobile = mobile || "";
+        user.dateOfBirth = dateOfBirth || "";
+        user.address = address || "";
+        user.city = city || "";
+        user.state = state || "";
+        user.pincode = pincode || "";
+
+        await user.save();
+
+        res.send("Profile updated successfully");
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Something went wrong");
+    }
+});
+
 router.post("/logout", (req, res) => {
     res.clearCookie("token", {
         httpOnly: true,
