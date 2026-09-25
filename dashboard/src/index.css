@@ -845,4 +845,195 @@ hr {
 }
 
 
+.apps-page {
+    width: 100%;
+    box-sizing: border-box;
+}
 
+.apps-header {
+    margin-bottom: 35px;
+}
+
+.apps-header h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 400;
+    color: rgb(71, 71, 71);
+}
+
+.apps-header p {
+    margin-top: 8px;
+    margin-bottom: 0;
+    font-size: 0.9rem;
+    color: rgb(145, 145, 145);
+    font-weight: 300;
+}
+
+.apps-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.apps-item {
+    min-height: 105px;
+    padding: 22px 25px;
+    box-sizing: border-box;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.apps-item-content {
+    padding-right: 25px;
+}
+
+.apps-item-content h3 {
+    margin: 0 0 7px;
+    font-size: 1rem;
+    font-weight: 400;
+    color: rgb(71, 71, 71);
+}
+
+.apps-item-content p {
+    margin: 0;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: rgb(145, 145, 145);
+    font-weight: 300;
+}
+
+.apps-status {
+    flex-shrink: 0;
+    padding: 6px 12px;
+    border: 1px solid #e5e5e5;
+    border-radius: 3px;
+    font-size: 0.7rem;
+    color: rgb(145, 145, 145);
+    background: #fafafa;
+}
+
+.apps-footer {
+    margin-top: 35px;
+    text-align: center;
+}
+
+.apps-footer p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: rgb(160, 160, 160);
+    font-weight: 300;
+}
+
+@media (max-width: 700px) {
+
+    .apps-item {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .apps-item-content {
+        padding-right: 0;
+    }
+
+}
+
+
+.no-orders {
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.no-orders h3 {
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: rgb(71, 71, 71);
+}
+
+.no-orders p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: rgb(145, 145, 145);
+    font-weight: 300;
+}
+
+.summary-empty-state {
+    padding: 20px 0;
+}
+
+.summary-empty-state p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: rgb(145, 145, 145);
+    font-weight: 300;
+}
+
+
+.sell-disabled {
+    opacity: 0.45;
+    cursor: not-allowed !important;
+}
+
+.available-quantity {
+    margin-top: 10px;
+    font-size: 0.75rem;
+    color: rgb(145, 145, 145);
+}
+
+.sell-disabled {
+    opacity: 0.45;
+    cursor: not-allowed !important;
+}
+
+.available-quantity {
+    margin-top: 10px;
+    font-size: 0.75rem;
+    color: rgb(145, 145, 145);
+}
+
+.watchlist-message-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.15);
+    z-index: 20;
+}
+
+.watchlist-message {
+    width: 320px;
+    padding: 25px;
+    box-sizing: border-box;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    text-align: center;
+}
+
+.watchlist-message p {
+    margin: 0 0 20px;
+    font-size: 0.9rem;
+    color: rgb(71, 71, 71);
+}
+
+.watchlist-message button {
+    padding: 7px 25px;
+    border: none;
+    border-radius: 3px;
+    background: #4184f3;
+    color: #fff;
+    cursor: pointer;
+}
+
+.watchlist-message button:hover {
+    background: #74a7fa;
+}

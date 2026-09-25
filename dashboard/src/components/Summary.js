@@ -66,6 +66,7 @@ const Summary = () => {
                                 : "0.00"}
                             k
                         </h3>
+
                         <p>Margin available</p>
                     </div>
 
@@ -96,36 +97,50 @@ const Summary = () => {
                     <p>Holdings ({allHoldings.length})</p>
                 </span>
 
-                <div className="data">
-                    <div className="first">
-                        <h3 className={totalPnLClass}>
-                            {(totalPnL / 1000).toFixed(2)}k{" "}
-                            <small>
-                                {totalPnL >= 0 ? "+" : ""}
-                                {totalPnLPercentage.toFixed(2)}%
-                            </small>
-                        </h3>
-                        <p>P&L</p>
-                    </div>
+                {allHoldings.length === 0 ? (
 
-                    <hr />
-
-                    <div className="second">
+                    <div className="summary-empty-state">
                         <p>
-                            Current Value{" "}
-                            <span>
-                                {(currentValue / 1000).toFixed(2)}k
-                            </span>
-                        </p>
-
-                        <p>
-                            Investment{" "}
-                            <span>
-                                {(totalInvestment / 1000).toFixed(2)}k
-                            </span>
+                            No holdings yet. Buy a stock to see your
+                            portfolio performance here.
                         </p>
                     </div>
-                </div>
+
+                ) : (
+
+                    <div className="data">
+                        <div className="first">
+                            <h3 className={totalPnLClass}>
+                                {(totalPnL / 1000).toFixed(2)}k{" "}
+                                <small>
+                                    {totalPnL >= 0 ? "+" : ""}
+                                    {totalPnLPercentage.toFixed(2)}%
+                                </small>
+                            </h3>
+
+                            <p>P&L</p>
+                        </div>
+
+                        <hr />
+
+                        <div className="second">
+                            <p>
+                                Current Value{" "}
+                                <span>
+                                    {(currentValue / 1000).toFixed(2)}k
+                                </span>
+                            </p>
+
+                            <p>
+                                Investment{" "}
+                                <span>
+                                    {(totalInvestment / 1000).toFixed(2)}k
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+
+                )}
 
                 <hr className="divider" />
             </div>

@@ -20,15 +20,21 @@ const Orders = () => {
 
     return (
         <div className="orders">
-            {allOrders.length === 0 ? (
-                <div className="no-orders">
-                    <p>You haven't placed any orders today</p>
 
-                    <button className="btn">
-                        Get started
-                    </button>
+            {allOrders.length === 0 ? (
+
+                <div className="no-orders">
+                    <h3>No orders yet</h3>
+
+                    <p>
+                        Your orders will appear here once you place your
+                        first trade.
+                    </p>
+
                 </div>
+
             ) : (
+
                 <div className="order-table">
                     <table>
                         <thead>
@@ -70,7 +76,9 @@ const Orders = () => {
                         </tbody>
                     </table>
                 </div>
+
             )}
+
         </div>
     );
 };

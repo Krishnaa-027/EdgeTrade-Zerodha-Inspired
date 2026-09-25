@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import axios from "axios";
@@ -11,6 +11,7 @@ const SellActionWindow = ({ uid }) => {
     const [product, setProduct] = useState("CNC");
     const [stockQuantity, setStockQuantity] = useState(1);
     const [stockPrice, setStockPrice] = useState(0.0);
+    const [availableQuantity, setAvailableQuantity] = useState(0);
     const [error, setError] = useState("");
 
     const {
@@ -20,25 +21,97 @@ const SellActionWindow = ({ uid }) => {
         showSuccessMessage,
     } = useContext(GeneralContext);
 
-    const handleSellClick = async () => {
+    const loadAvailableQuantity = async () => {
         try {
-            await axios.post("http://localhost:3002/newOrder", {
-                name: uid,
-                qty: stockQuantity,
-                price: stockPrice,
-                mode: "SELL",
-                product: product,
-            });
+            const holdingsResponse = await axios.get(
+                "http://localhost:3002/allHoldings",
+                {
+                    withCredentials: true,
+                }
+            );
+
+            const positionsResponse = await axios.get(
+                "http://localhost:3002/allPositions",
+                {
+                    withCredentials: true,
+                }
+            );
+
+            if (product === "CNC") {
+                const holding = holdingsResponse.data.find(
+                    (item) => item.name === uid
+                );
+
+                setAvailableQuantity(
+                    holding ? holding.qty : 0
+                );
+            } else {
+                const position = positionsResponse.data.find(
+                    (item) =>
+                        item.name === uid &&
+                        item.product === "MIS"
+                );
+
+                setAvailableQuantity(
+                    position ? position.qty : 0
+                );
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
+        loadAvailableQuantity();
+    }, [product, uid]);
+
+    const handleSellClick = async () => {
+        if (availableQuantity === 0) {
+            setError("You need to buy this stock first");
+            return;
+        }
+
+        if (Number(stockQuantity) <= 0) {
+            setError("Quantity must be greater than 0");
+            return;
+        }
+
+        if (Number(stockQuantity) > availableQuantity) {
+            setError(
+                `You can sell maximum ${availableQuantity} quantity`
+            );
+            return;
+        }
+
+        try {
+            await axios.post(
+                "http://localhost:3002/newOrder",
+                {
+                    name: uid,
+                    qty: stockQuantity,
+                    price: stockPrice,
+                    mode: "SELL",
+                    product: product,
+                },
+                {
+                    withCredentials: true,
+                }
+            );
 
             setError("");
+
             refreshHoldings();
             refreshFunds();
+
             closeSellWindow();
 
-            showSuccessMessage(`Sell order successful for ${uid}`);
+            showSuccessMessage(
+                `Sell order successful for ${uid}`
+            );
         } catch (error) {
             setError(
-                error.response?.data || "Something went wrong"
+                error.response?.data ||
+                "Something went wrong"
             );
 
             setTimeout(() => {
@@ -52,7 +125,11 @@ const SellActionWindow = ({ uid }) => {
     };
 
     return (
-        <div className="container" id="buy-window" draggable="true">
+        <div
+            className="container"
+            id="buy-window"
+            draggable="true"
+        >
             <div className="regular-order">
 
                 <div className="stock-name">
@@ -64,7 +141,9 @@ const SellActionWindow = ({ uid }) => {
 
                     <select
                         value={product}
-                        onChange={(e) => setProduct(e.target.value)}
+                        onChange={(e) =>
+                            setProduct(e.target.value)
+                        }
                     >
                         <option value="CNC">CNC</option>
                         <option value="MIS">MIS</option>
@@ -80,7 +159,9 @@ const SellActionWindow = ({ uid }) => {
                             name="qty"
                             id="qty"
                             onChange={(e) =>
-                                setStockQuantity(e.target.value)
+                                setStockQuantity(
+                                    e.target.value
+                                )
                             }
                             value={stockQuantity}
                         />
@@ -95,11 +176,17 @@ const SellActionWindow = ({ uid }) => {
                             id="price"
                             step="0.05"
                             onChange={(e) =>
-                                setStockPrice(e.target.value)
+                                setStockPrice(
+                                    e.target.value
+                                )
                             }
                             value={stockPrice}
                         />
                     </fieldset>
+                </div>
+
+                <div className="available-quantity">
+                    Available quantity: {availableQuantity}
                 </div>
             </div>
 

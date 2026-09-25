@@ -11,6 +11,7 @@ const BuyActionWindow = ({ uid }) => {
     const [product, setProduct] = useState("CNC");
     const [stockQuantity, setStockQuantity] = useState(1);
     const [stockPrice, setStockPrice] = useState(0.0);
+    const [error, setError] = useState("");
 
     const {
         closeBuyWindow,
@@ -20,19 +21,40 @@ const BuyActionWindow = ({ uid }) => {
     } = useContext(GeneralContext);
 
     const handleBuyClick = async () => {
-        await axios.post("http://localhost:3002/newOrder", {
-            name: uid,
-            qty: stockQuantity,
-            price: stockPrice,
-            mode: "BUY",
-            product: product,
-        });
+        try {
+            await axios.post(
+                "http://localhost:3002/newOrder",
+                {
+                    name: uid,
+                    qty: stockQuantity,
+                    price: stockPrice,
+                    mode: "BUY",
+                    product: product,
+                },
+                {
+                    withCredentials: true,
+                }
+            );
 
-        refreshHoldings();
-        refreshFunds();
-        closeBuyWindow();
+            setError("");
 
-        showSuccessMessage(`Buy order successful for ${uid}`);
+            refreshHoldings();
+            refreshFunds();
+            closeBuyWindow();
+
+            showSuccessMessage(
+                `Buy order successful for ${uid}`
+            );
+        } catch (error) {
+            setError(
+                error.response?.data ||
+                "Something went wrong"
+            );
+
+            setTimeout(() => {
+                setError("");
+            }, 4000);
+        }
     };
 
     const handleCancelClick = () => {
@@ -40,7 +62,11 @@ const BuyActionWindow = ({ uid }) => {
     };
 
     return (
-        <div className="container" id="buy-window" draggable="true">
+        <div
+            className="container"
+            id="buy-window"
+            draggable="true"
+        >
             <div className="regular-order">
 
                 <div className="stock-name">
@@ -52,7 +78,9 @@ const BuyActionWindow = ({ uid }) => {
 
                     <select
                         value={product}
-                        onChange={(e) => setProduct(e.target.value)}
+                        onChange={(e) =>
+                            setProduct(e.target.value)
+                        }
                     >
                         <option value="CNC">CNC</option>
                         <option value="MIS">MIS</option>
@@ -68,7 +96,9 @@ const BuyActionWindow = ({ uid }) => {
                             name="qty"
                             id="qty"
                             onChange={(e) =>
-                                setStockQuantity(e.target.value)
+                                setStockQuantity(
+                                    e.target.value
+                                )
                             }
                             value={stockQuantity}
                         />
@@ -83,7 +113,9 @@ const BuyActionWindow = ({ uid }) => {
                             id="price"
                             step="0.05"
                             onChange={(e) =>
-                                setStockPrice(e.target.value)
+                                setStockPrice(
+                                    e.target.value
+                                )
                             }
                             value={stockPrice}
                         />
@@ -111,9 +143,14 @@ const BuyActionWindow = ({ uid }) => {
                     </Link>
                 </div>
             </div>
+
+            {error && (
+                <div className="error-message">
+                    {error}
+                </div>
+            )}
         </div>
     );
 };
 
 export default BuyActionWindow;
-
