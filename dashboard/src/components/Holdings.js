@@ -14,7 +14,7 @@ const Holdings = () => {
 
     useEffect(() => {
         axios.get(
-            "http://localhost:3002/allHoldings",
+            `${process.env.REACT_APP_BACKEND_URL}/allHoldings`,
             {
                 withCredentials: true,
             }

@@ -9,7 +9,7 @@ function Universe() {
     const checkLoginStatus = async () => {
         try {
             const response = await fetch(
-                "http://localhost:3002/auth-status",
+                `${process.env.REACT_APP_BACKEND_URL}/auth-status`,
                 {
                     credentials: "include",
                 }

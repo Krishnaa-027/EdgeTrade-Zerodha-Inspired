@@ -21,7 +21,7 @@ const Menu = () => {
     const handleLogout = async () => {
         try {
             const response = await fetch(
-                "http://localhost:3002/logout",
+                `${process.env.REACT_APP_BACKEND_URL}/logout`,
                 {
                     method: "POST",
                     credentials: "include",
@@ -29,7 +29,8 @@ const Menu = () => {
             );
 
             if (response.ok) {
-                window.location.href = "http://localhost:3000/";
+                window.location.href =
+                    process.env.REACT_APP_FRONTEND_URL;
             }
         } catch (error) {
             console.log(error);
@@ -40,7 +41,7 @@ const Menu = () => {
         const loadProfile = async () => {
             try {
                 const response = await fetch(
-                    "http://localhost:3002/profile",
+                    `${process.env.REACT_APP_BACKEND_URL}/profile`,
                     {
                         credentials: "include",
                     }
@@ -48,7 +49,7 @@ const Menu = () => {
 
                 if (!response.ok) {
                     window.location.href =
-                        "http://localhost:3000/signup";
+                        `${process.env.REACT_APP_FRONTEND_URL}/signup`;
 
                     return;
                 }
@@ -60,7 +61,7 @@ const Menu = () => {
                 console.log(error);
 
                 window.location.href =
-                    "http://localhost:3000/signup";
+                    `${process.env.REACT_APP_FRONTEND_URL}/signup`;
             }
         };
 
@@ -237,7 +238,7 @@ const Menu = () => {
             <div className="profile-section">
 
                 <Link
-                    to="http://localhost:3000/"
+                    to={process.env.REACT_APP_FRONTEND_URL}
                     className="back-home"
                 >
                     <span className="back-arrow">←</span>

@@ -50,7 +50,7 @@ function NavBar() {
     const checkLoginStatus = async () => {
         try {
             const response = await fetch(
-                "http://localhost:3002/auth-status",
+                `${process.env.REACT_APP_BACKEND_URL}/auth-status`,
                 {
                     credentials: "include",
                 }
@@ -87,7 +87,7 @@ function NavBar() {
 
     const handleLogout = async () => {
         try {
-            await fetch("http://localhost:3002/logout", {
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/logout`, {
                 method: "POST",
                 credentials: "include",
             });
@@ -95,7 +95,7 @@ function NavBar() {
             setIsLoggedIn(false);
             setShowMenu(false);
 
-            window.location.href = "http://localhost:3000";
+            window.location.href = window.location.origin;
         } catch (error) {
             console.log(error);
         }
@@ -103,12 +103,12 @@ function NavBar() {
 
     const handleDashboard = () => {
         setShowMenu(false);
-        window.location.href = "http://localhost:3001";
+        window.location.href = process.env.REACT_APP_DASHBOARD_URL;
     };
 
     const handleProfile = () => {
         setShowMenu(false);
-        window.location.href = "http://localhost:3001/profile";
+        window.location.href = `${process.env.REACT_APP_DASHBOARD_URL}/profile`;
     };
 
     const handleMenuBoxClick = (event) => {

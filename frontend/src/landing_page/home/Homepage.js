@@ -11,7 +11,7 @@ function HomePage() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     useEffect(() => {
-        fetch("http://localhost:3002/auth-status", {
+        fetch(`${process.env.REACT_APP_BACKEND_URL}/auth-status`, {
             credentials: "include",
         })
             .then((response) => setIsLoggedIn(response.ok))

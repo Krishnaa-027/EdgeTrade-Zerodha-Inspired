@@ -14,17 +14,23 @@ const Summary = () => {
     } = useContext(GeneralContext);
 
     useEffect(() => {
-        axios.get("http://localhost:3002/allHoldings", {
-            withCredentials: true,
-        }).then((res) => {
+        axios.get(
+            `${process.env.REACT_APP_BACKEND_URL}/allHoldings`,
+            {
+                withCredentials: true,
+            }
+        ).then((res) => {
             setAllHoldings(res.data);
         });
     }, [holdingsRefresh]);
 
     useEffect(() => {
-        axios.get("http://localhost:3002/funds", {
-            withCredentials: true,
-        }).then((res) => {
+        axios.get(
+            `${process.env.REACT_APP_BACKEND_URL}/funds`,
+            {
+                withCredentials: true,
+            }
+        ).then((res) => {
             setFunds(res.data);
         });
     }, [fundsRefresh]);

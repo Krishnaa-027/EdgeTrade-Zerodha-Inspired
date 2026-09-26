@@ -40,7 +40,7 @@ function SignupHero() {
     const checkLoginStatus = async () => {
         try {
             const response = await fetch(
-                "http://localhost:3002/auth-status",
+                `${process.env.REACT_APP_BACKEND_URL}/auth-status`,
                 {
                     credentials: "include",
                 }
@@ -85,18 +85,21 @@ function SignupHero() {
         }
 
         try {
-            const response = await fetch("http://localhost:3002/signup", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                credentials: "include",
-                body: JSON.stringify({
-                    name,
-                    email,
-                    password,
-                }),
-            });
+            const response = await fetch(
+                `${process.env.REACT_APP_BACKEND_URL}/signup`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    credentials: "include",
+                    body: JSON.stringify({
+                        name,
+                        email,
+                        password,
+                    }),
+                }
+            );
 
             const data = await response.text();
 
@@ -114,7 +117,7 @@ function SignupHero() {
 
             setMessage("");
 
-            window.location.href = "http://localhost:3001";
+            window.location.href = process.env.REACT_APP_DASHBOARD_URL;
         } catch (error) {
             console.log(error);
             setMessage("Something went wrong. Please try again.");
@@ -130,17 +133,20 @@ function SignupHero() {
         }
 
         try {
-            const response = await fetch("http://localhost:3002/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                credentials: "include",
-                body: JSON.stringify({
-                    email,
-                    password,
-                }),
-            });
+            const response = await fetch(
+                `${process.env.REACT_APP_BACKEND_URL}/login`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    credentials: "include",
+                    body: JSON.stringify({
+                        email,
+                        password,
+                    }),
+                }
+            );
 
             const data = await response.text();
 
@@ -156,7 +162,7 @@ function SignupHero() {
 
             setMessage("");
 
-            window.location.href = "http://localhost:3001";
+            window.location.href = process.env.REACT_APP_DASHBOARD_URL;
         } catch (error) {
             console.log(error);
             setMessage("Something went wrong. Please try again.");
@@ -222,7 +228,7 @@ function SignupHero() {
                                 <div className="logged-in-account-buttons">
 
                                     <a
-                                        href="http://localhost:3001"
+                                        href={process.env.REACT_APP_DASHBOARD_URL}
                                         className="signup-main-btn"
                                     >
                                         Go to Dashboard

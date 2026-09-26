@@ -51,11 +51,21 @@ function Team() {
                             Homepage
                         </Link>{" "}
                         /{" "}
-                        <a href="#" className="para-link">
+                        <a
+                            href="https://github.com/krishnaa-027"
+                            target="_blank"
+                            rel="noreferrer"
+                            className="para-link"
+                        >
                             GitHub
                         </a>{" "}
                         /{" "}
-                        <a href="#" className="para-link">
+                        <a
+                            href="https://www.linkedin.com/in/krishna-sharma0271/"
+                            target="_blank"
+                            rel="noreferrer"
+                            className="para-link"
+                        >
                             LinkedIn
                         </a>{" "}
                         .

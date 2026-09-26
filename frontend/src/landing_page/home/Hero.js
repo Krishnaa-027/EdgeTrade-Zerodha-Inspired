@@ -9,7 +9,7 @@ function Hero() {
     const checkLoginStatus = async () => {
         try {
             const response = await fetch(
-                "http://localhost:3002/auth-status",
+                `${process.env.REACT_APP_BACKEND_URL}/auth-status`,
                 {
                     credentials: "include",
                 }
@@ -60,10 +60,10 @@ function Hero() {
 
                 {isLoggedIn ? (
                     <Link
-                        to="http://localhost:3001"
+                        to={process.env.REACT_APP_DASHBOARD_URL}
                         className="p-2 mt-3 btn btn-primary fs-5 mb-5 hero-button explore-dashboard-button"
                     >
-                        Explore Dashboard{" "}<span className="dashboard-arrow">↗</span>                       
+                        Explore Dashboard{" "}<span className="dashboard-arrow">↗</span>
                     </Link>
                 ) : (
                     <Link

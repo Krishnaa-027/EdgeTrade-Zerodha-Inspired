@@ -19,7 +19,8 @@ axios.interceptors.response.use(
     },
     (error) => {
         if (error.response && error.response.status === 401) {
-            window.location.href = "http://localhost:3000/signup";
+            window.location.href =
+                `${process.env.REACT_APP_FRONTEND_URL}/signup`;
 
             return new Promise(() => {});
         }
@@ -42,7 +43,7 @@ function ProtectedDashboard() {
     const checkLoginStatus = async () => {
         try {
             const response = await fetch(
-                "http://localhost:3002/auth-status",
+                `${process.env.REACT_APP_BACKEND_URL}/auth-status`,
                 {
                     credentials: "include",
                 }
@@ -51,11 +52,13 @@ function ProtectedDashboard() {
             if (response.ok) {
                 setIsLoggedIn(true);
             } else {
-                window.location.href = "http://localhost:3000/signup";
+                window.location.href =
+                    `${process.env.REACT_APP_FRONTEND_URL}/signup`;
             }
         } catch (error) {
             console.log(error);
-            window.location.href = "http://localhost:3000/signup";
+            window.location.href =
+                `${process.env.REACT_APP_FRONTEND_URL}/signup`;
         } finally {
             setIsCheckingAuth(false);
         }

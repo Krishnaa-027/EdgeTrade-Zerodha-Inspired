@@ -17,7 +17,7 @@ const Positions = () => {
 
     useEffect(() => {
         axios.get(
-            "http://localhost:3002/allPositions",
+            `${process.env.REACT_APP_BACKEND_URL}/allPositions`,
             {
                 withCredentials: true,
             }

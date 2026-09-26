@@ -21,7 +21,7 @@ function Pricing(){
                 <div className="col-6 mb-5">
                     <div className="row text-center">
                         <div className="col mt-3 p-2 border">
-                            <h1 className="fs-2 mt-3 mb-4"><i class="fa fa-inr" aria-hidden="true"></i>0</h1>
+                            <h1 className="fs-2 mt-3 mb-4"><i className="fa fa-inr" aria-hidden="true"></i>0</h1>
                             <p className="mb-4">Free equity delivery and <br/> direct mutual funds</p>
                         </div>
                         <div className="col mt-3 p-2 border">

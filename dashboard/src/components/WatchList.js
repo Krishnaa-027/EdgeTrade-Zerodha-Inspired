@@ -29,14 +29,14 @@ const WatchList = () => {
     const loadUserData = async () => {
         try {
             const holdingsResponse = await axios.get(
-                "http://localhost:3002/allHoldings",
+                `${process.env.REACT_APP_BACKEND_URL}/allHoldings`,
                 {
                     withCredentials: true,
                 }
             );
 
             const positionsResponse = await axios.get(
-                "http://localhost:3002/allPositions",
+                `${process.env.REACT_APP_BACKEND_URL}/allPositions`,
                 {
                     withCredentials: true,
                 }
@@ -395,7 +395,7 @@ const WatchListActions = ({
     const checkLoginStatus = async () => {
         try {
             const response = await fetch(
-                "http://localhost:3002/auth-status",
+                `${process.env.REACT_APP_BACKEND_URL}/auth-status`,
                 {
                     credentials: "include",
                 }
@@ -403,7 +403,7 @@ const WatchListActions = ({
 
             if (!response.ok) {
                 window.location.href =
-                    "http://localhost:3000/signup";
+                    `${process.env.REACT_APP_FRONTEND_URL}/signup`;
 
                 return false;
             }
@@ -413,7 +413,7 @@ const WatchListActions = ({
             console.log(error);
 
             window.location.href =
-                "http://localhost:3000/signup";
+                `${process.env.REACT_APP_FRONTEND_URL}/signup`;
 
             return false;
         }

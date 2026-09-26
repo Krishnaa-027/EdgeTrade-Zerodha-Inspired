@@ -30,14 +30,14 @@ const SellActionWindow = ({
     const loadAvailableQuantity = async () => {
         try {
             const holdingsResponse = await axios.get(
-                "http://localhost:3002/allHoldings",
+                `${process.env.REACT_APP_BACKEND_URL}/allHoldings`,
                 {
                     withCredentials: true,
                 }
             );
 
             const positionsResponse = await axios.get(
-                "http://localhost:3002/allPositions",
+                `${process.env.REACT_APP_BACKEND_URL}/allPositions`,
                 {
                     withCredentials: true,
                 }
@@ -108,7 +108,7 @@ const SellActionWindow = ({
 
         try {
             await axios.post(
-                "http://localhost:3002/newOrder",
+                `${process.env.REACT_APP_BACKEND_URL}/newOrder`,
                 {
                     name: uid,
                     qty: Number(stockQuantity),

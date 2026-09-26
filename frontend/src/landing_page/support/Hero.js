@@ -14,7 +14,7 @@ function Hero() {
                 </div>
 
                 <div className="support-search">
-                    <i class="fa fa-search" aria-hidden="true"></i>
+                    <i className="fa fa-search" aria-hidden="true"></i>
 
                     <input
                         type="text"

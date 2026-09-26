@@ -15,12 +15,16 @@ const Profile = () => {
 
     const getProfile = async () => {
         try {
-            const response = await fetch("http://localhost:3002/profile", {
-                credentials: "include",
-            });
+            const response = await fetch(
+                `${process.env.REACT_APP_BACKEND_URL}/profile`,
+                {
+                    credentials: "include",
+                }
+            );
 
             if (!response.ok) {
-                window.location.href = "http://localhost:3000/signup";
+                window.location.href =
+                    `${process.env.REACT_APP_FRONTEND_URL}/signup`;
                 return;
             }
 
@@ -30,7 +34,8 @@ const Profile = () => {
             setFormData(data);
         } catch (error) {
             console.log(error);
-            window.location.href = "http://localhost:3000/signup";
+            window.location.href =
+                `${process.env.REACT_APP_FRONTEND_URL}/signup`;
         }
     };
 
@@ -60,22 +65,25 @@ const Profile = () => {
         setMessage("");
 
         try {
-            const response = await fetch("http://localhost:3002/profile", {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                credentials: "include",
-                body: JSON.stringify({
-                    name: formData.name,
-                    mobile: formData.mobile,
-                    dateOfBirth: formData.dateOfBirth,
-                    address: formData.address,
-                    city: formData.city,
-                    state: formData.state,
-                    pincode: formData.pincode,
-                }),
-            });
+            const response = await fetch(
+                `${process.env.REACT_APP_BACKEND_URL}/profile`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    credentials: "include",
+                    body: JSON.stringify({
+                        name: formData.name,
+                        mobile: formData.mobile,
+                        dateOfBirth: formData.dateOfBirth,
+                        address: formData.address,
+                        city: formData.city,
+                        state: formData.state,
+                        pincode: formData.pincode,
+                    }),
+                }
+            );
 
             if (!response.ok) {
                 const errorMessage = await response.text();

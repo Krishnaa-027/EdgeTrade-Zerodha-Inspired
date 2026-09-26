@@ -11,9 +11,12 @@ const Funds = () => {
     const { fundsRefresh } = useContext(GeneralContext);
 
     useEffect(() => {
-        axios.get("http://localhost:3002/funds", {
-            withCredentials: true,
-        }).then((res) => {
+        axios.get(
+            `${process.env.REACT_APP_BACKEND_URL}/funds`,
+            {
+                withCredentials: true,
+            }
+        ).then((res) => {
             setFunds(res.data);
         });
     }, [fundsRefresh]);
