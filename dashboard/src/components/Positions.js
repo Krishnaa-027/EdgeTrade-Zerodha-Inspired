@@ -1,19 +1,27 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, {
+    useState,
+    useEffect,
+    useContext,
+} from "react";
 
 import axios from "axios";
 
 import GeneralContext from "./GeneralContext";
 
 const Positions = () => {
+    const [allPositions, setAllPositions] =
+        useState([]);
 
-    const [allPositions, setAllPositions] = useState([]);
-
-    const { holdingsRefresh } = useContext(GeneralContext);
+    const { holdingsRefresh } =
+        useContext(GeneralContext);
 
     useEffect(() => {
-        axios.get("http://localhost:3002/allPositions", {
-            withCredentials: true,
-        }).then((res) => {
+        axios.get(
+            "http://localhost:3002/allPositions",
+            {
+                withCredentials: true,
+            }
+        ).then((res) => {
             setAllPositions(res.data);
         });
     }, [holdingsRefresh]);
@@ -30,8 +38,8 @@ const Positions = () => {
                     <h3>No positions yet</h3>
 
                     <p>
-                        Your positions will appear here after you place
-                        a trade.
+                        Your positions will appear here after
+                        you place a trade.
                     </p>
                 </div>
 
@@ -52,57 +60,92 @@ const Positions = () => {
                         </thead>
 
                         <tbody>
-                            {allPositions.map((stock, index) => {
+                            {allPositions.map(
+                                (stock, index) => {
 
-                                const curValue =
-                                    stock.price * stock.qty;
+                                    const curValue =
+                                        stock.price *
+                                        stock.qty;
 
-                                const isProfit =
-                                    curValue -
-                                        stock.avg * stock.qty >=
-                                    0.0;
+                                    const investment =
+                                        stock.avg *
+                                        stock.qty;
 
-                                const profClass = isProfit
-                                    ? "profit"
-                                    : "loss";
+                                    const pnl =
+                                        curValue -
+                                        investment;
 
-                                const dayClass = stock.isLoss
-                                    ? "loss"
-                                    : "profit";
+                                    const profClass =
+                                        pnl >= 0
+                                            ? "profit"
+                                            : "loss";
 
-                                return (
-                                    <tr key={index}>
-                                        <td>{stock.product}</td>
+                                    const dayValue =
+                                        parseFloat(
+                                            stock.day
+                                        );
 
-                                        <td>{stock.name}</td>
+                                    const dayClass =
+                                        dayValue >= 0
+                                            ? "profit"
+                                            : "loss";
 
-                                        <td>{stock.qty}</td>
+                                    return (
+                                        <tr
+                                            key={index}
+                                        >
+                                            <td>
+                                                {
+                                                    stock.product
+                                                }
+                                            </td>
 
-                                        <td>
-                                            {stock.avg.toFixed(2)}
-                                        </td>
+                                            <td>
+                                                {
+                                                    stock.name
+                                                }
+                                            </td>
 
-                                        <td>
-                                            {stock.price.toFixed(2)}
-                                        </td>
+                                            <td>
+                                                {stock.qty}
+                                            </td>
 
-                                        <td className={profClass}>
-                                            {(
-                                                curValue -
-                                                stock.avg * stock.qty
-                                            ).toFixed(2)}
-                                        </td>
+                                            <td>
+                                                {stock.avg.toFixed(
+                                                    2
+                                                )}
+                                            </td>
 
-                                        <td className={dayClass}>
-                                            {stock.day}
-                                        </td>
-                                    </tr>
-                                );
-                            })}
+                                            <td>
+                                                {stock.price.toFixed(
+                                                    2
+                                                )}
+                                            </td>
+
+                                            <td
+                                                className={
+                                                    profClass
+                                                }
+                                            >
+                                                {pnl.toFixed(
+                                                    2
+                                                )}
+                                            </td>
+
+                                            <td
+                                                className={
+                                                    dayClass
+                                                }
+                                            >
+                                                {stock.day}
+                                            </td>
+                                        </tr>
+                                    );
+                                }
+                            )}
                         </tbody>
                     </table>
                 </div>
-
             )}
         </>
     );

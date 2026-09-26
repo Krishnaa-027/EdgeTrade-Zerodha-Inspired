@@ -97,7 +97,44 @@ app.get("/funds", authMiddleware, async (req, res) => {
 
 app.post("/newOrder", authMiddleware, async (req, res) => {
     try {
-        const { name, qty, price, mode, product } = req.body;
+        const {
+            name,
+            qty,
+            price,
+            marketPrice,
+            day,
+            mode,
+            product,
+        } = req.body;
+
+        const orderQty = Number(qty);
+        const orderPrice = Number(price);
+        const currentPrice = Number(marketPrice);
+        const dayChange = day || "0.00%";
+
+        if (!name || !product || !mode) {
+            return res.status(400).send(
+                "Required order details are missing"
+            );
+        }
+
+        if (orderQty <= 0) {
+            return res.status(400).send(
+                "Quantity must be greater than 0"
+            );
+        }
+
+        if (orderPrice <= 0) {
+            return res.status(400).send(
+                "Price must be greater than 0"
+            );
+        }
+
+        if (currentPrice <= 0) {
+            return res.status(400).send(
+                "Current stock price is invalid"
+            );
+        }
 
         let existingHolding = await HoldingsModel.findOne({
             userId: req.userId,
@@ -115,21 +152,26 @@ app.post("/newOrder", authMiddleware, async (req, res) => {
         });
 
         if (!funds) {
-            return res.status(500).send("Funds account not found");
+            return res.status(500).send(
+                "Funds account not found"
+            );
         }
 
         if (mode === "BUY") {
-            let orderValue = Number(qty) * Number(price);
+            const orderValue =
+                orderQty * orderPrice;
 
             if (orderValue > funds.availableCash) {
-                return res.status(400).send("Insufficient funds");
+                return res.status(400).send(
+                    "Insufficient funds"
+                );
             }
 
-            let newOrder = new OrdersModel({
+            const newOrder = new OrdersModel({
                 userId: req.userId,
                 name: name,
-                qty: qty,
-                price: price,
+                qty: orderQty,
+                price: orderPrice,
                 mode: mode,
                 product: product,
             });
@@ -138,30 +180,61 @@ app.post("/newOrder", authMiddleware, async (req, res) => {
 
             if (product === "CNC") {
                 if (existingHolding) {
-                    let oldQty = existingHolding.qty;
-                    let oldAvg = existingHolding.avg;
+                    const oldQty =
+                        existingHolding.qty;
 
-                    let newQty = oldQty + Number(qty);
+                    const oldAvg =
+                        existingHolding.avg;
 
-                    let newAvg =
-                        (oldQty * oldAvg + Number(qty) * Number(price)) /
+                    const newQty =
+                        oldQty + orderQty;
+
+                    const newAvg =
+                        (
+                            oldQty * oldAvg +
+                            orderQty * orderPrice
+                        ) / newQty;
+
+                    const netPercentage =
+                        (
+                            (currentPrice - newAvg) /
+                            newAvg
+                        ) * 100;
+
+                    existingHolding.qty =
                         newQty;
 
-                    existingHolding.qty = newQty;
-                    existingHolding.avg = newAvg;
-                    existingHolding.price = Number(price);
+                    existingHolding.avg =
+                        newAvg;
+
+                    existingHolding.price =
+                        currentPrice;
+
+                    existingHolding.net =
+                        `${netPercentage >= 0 ? "+" : ""}${netPercentage.toFixed(2)}%`;
+
+                    existingHolding.day =
+                        dayChange;
 
                     await existingHolding.save();
                 } else {
-                    let newHolding = new HoldingsModel({
-                        userId: req.userId,
-                        name: name,
-                        qty: Number(qty),
-                        avg: Number(price),
-                        price: Number(price),
-                        net: "0.00%",
-                        day: "0.00%",
-                    });
+                    const netPercentage =
+                        (
+                            (currentPrice - orderPrice) /
+                            orderPrice
+                        ) * 100;
+
+                    const newHolding =
+                        new HoldingsModel({
+                            userId: req.userId,
+                            name: name,
+                            qty: orderQty,
+                            avg: orderPrice,
+                            price: currentPrice,
+                            net:
+                                `${netPercentage >= 0 ? "+" : ""}${netPercentage.toFixed(2)}%`,
+                            day: dayChange,
+                        });
 
                     await newHolding.save();
                 }
@@ -169,32 +242,67 @@ app.post("/newOrder", authMiddleware, async (req, res) => {
 
             if (product === "MIS") {
                 if (existingPosition) {
-                    let oldQty = existingPosition.qty;
-                    let oldAvg = existingPosition.avg;
+                    const oldQty =
+                        existingPosition.qty;
 
-                    let newQty = oldQty + Number(qty);
+                    const oldAvg =
+                        existingPosition.avg;
 
-                    let newAvg =
-                        (oldQty * oldAvg + Number(qty) * Number(price)) /
+                    const newQty =
+                        oldQty + orderQty;
+
+                    const newAvg =
+                        (
+                            oldQty * oldAvg +
+                            orderQty * orderPrice
+                        ) / newQty;
+
+                    const netPercentage =
+                        (
+                            (currentPrice - newAvg) /
+                            newAvg
+                        ) * 100;
+
+                    existingPosition.qty =
                         newQty;
 
-                    existingPosition.qty = newQty;
-                    existingPosition.avg = newAvg;
-                    existingPosition.price = Number(price);
+                    existingPosition.avg =
+                        newAvg;
+
+                    existingPosition.price =
+                        currentPrice;
+
+                    existingPosition.net =
+                        `${netPercentage >= 0 ? "+" : ""}${netPercentage.toFixed(2)}%`;
+
+                    existingPosition.day =
+                        dayChange;
+
+                    existingPosition.isLoss =
+                        netPercentage < 0;
 
                     await existingPosition.save();
                 } else {
-                    let newPosition = new PositionsModel({
-                        userId: req.userId,
-                        product: "MIS",
-                        name: name,
-                        qty: Number(qty),
-                        avg: Number(price),
-                        price: Number(price),
-                        net: "0.00%",
-                        day: "0.00%",
-                        isLoss: false,
-                    });
+                    const netPercentage =
+                        (
+                            (currentPrice - orderPrice) /
+                            orderPrice
+                        ) * 100;
+
+                    const newPosition =
+                        new PositionsModel({
+                            userId: req.userId,
+                            product: "MIS",
+                            name: name,
+                            qty: orderQty,
+                            avg: orderPrice,
+                            price: currentPrice,
+                            net:
+                                `${netPercentage >= 0 ? "+" : ""}${netPercentage.toFixed(2)}%`,
+                            day: dayChange,
+                            isLoss:
+                                netPercentage < 0,
+                        });
 
                     await newPosition.save();
                 }
@@ -205,35 +313,45 @@ app.post("/newOrder", authMiddleware, async (req, res) => {
 
             await funds.save();
 
-            return res.send("Buy order saved successfully");
+            return res.send(
+                "Buy order saved successfully"
+            );
         }
 
         if (mode === "SELL") {
             if (product === "CNC") {
                 if (!existingHolding) {
-                    return res.status(400).send("Holding not found");
+                    return res.status(400).send(
+                        "Holding not found"
+                    );
                 }
 
-                if (Number(qty) > existingHolding.qty) {
-                    return res.status(400).send("Not enough quantity to sell");
+                if (orderQty > existingHolding.qty) {
+                    return res.status(400).send(
+                        "Not enough quantity to sell"
+                    );
                 }
             }
 
             if (product === "MIS") {
                 if (!existingPosition) {
-                    return res.status(400).send("Position not found");
+                    return res.status(400).send(
+                        "Position not found"
+                    );
                 }
 
-                if (Number(qty) > existingPosition.qty) {
-                    return res.status(400).send("Not enough quantity in position");
+                if (orderQty > existingPosition.qty) {
+                    return res.status(400).send(
+                        "Not enough quantity in position"
+                    );
                 }
             }
 
-            let newOrder = new OrdersModel({
+            const newOrder = new OrdersModel({
                 userId: req.userId,
                 name: name,
-                qty: qty,
-                price: price,
+                qty: orderQty,
+                price: orderPrice,
                 mode: mode,
                 product: product,
             });
@@ -241,8 +359,8 @@ app.post("/newOrder", authMiddleware, async (req, res) => {
             await newOrder.save();
 
             if (product === "CNC") {
-                let newQty =
-                    existingHolding.qty - Number(qty);
+                const newQty =
+                    existingHolding.qty - orderQty;
 
                 if (newQty === 0) {
                     await HoldingsModel.deleteOne({
@@ -250,16 +368,32 @@ app.post("/newOrder", authMiddleware, async (req, res) => {
                         name: name,
                     });
                 } else {
-                    existingHolding.qty = newQty;
-                    existingHolding.price = Number(price);
+                    const netPercentage =
+                        (
+                            (currentPrice -
+                                existingHolding.avg) /
+                            existingHolding.avg
+                        ) * 100;
+
+                    existingHolding.qty =
+                        newQty;
+
+                    existingHolding.price =
+                        currentPrice;
+
+                    existingHolding.net =
+                        `${netPercentage >= 0 ? "+" : ""}${netPercentage.toFixed(2)}%`;
+
+                    existingHolding.day =
+                        dayChange;
 
                     await existingHolding.save();
                 }
             }
 
             if (product === "MIS") {
-                let newQty =
-                    existingPosition.qty - Number(qty);
+                const newQty =
+                    existingPosition.qty - orderQty;
 
                 if (newQty === 0) {
                     await PositionsModel.deleteOne({
@@ -268,27 +402,53 @@ app.post("/newOrder", authMiddleware, async (req, res) => {
                         product: "MIS",
                     });
                 } else {
-                    existingPosition.qty = newQty;
-                    existingPosition.price = Number(price);
+                    const netPercentage =
+                        (
+                            (currentPrice -
+                                existingPosition.avg) /
+                            existingPosition.avg
+                        ) * 100;
+
+                    existingPosition.qty =
+                        newQty;
+
+                    existingPosition.price =
+                        currentPrice;
+
+                    existingPosition.net =
+                        `${netPercentage >= 0 ? "+" : ""}${netPercentage.toFixed(2)}%`;
+
+                    existingPosition.day =
+                        dayChange;
+
+                    existingPosition.isLoss =
+                        netPercentage < 0;
 
                     await existingPosition.save();
                 }
             }
 
-            let orderValue = Number(qty) * Number(price);
+            const orderValue =
+                orderQty * orderPrice;
 
             funds.availableCash =
                 funds.availableCash + orderValue;
 
             await funds.save();
 
-            return res.send("Sell order saved successfully");
+            return res.send(
+                "Sell order saved successfully"
+            );
         }
 
-        return res.status(400).send("Invalid order mode");
+        return res.status(400).send(
+            "Invalid order mode"
+        );
     } catch (error) {
         console.log(error);
-        res.status(500).send("Something went wrong");
+        res.status(500).send(
+            "Something went wrong"
+        );
     }
 });
 
@@ -300,6 +460,9 @@ app.listen(PORT, () => {
             console.log("DB Connected");
         })
         .catch((error) => {
-            console.log("DB connection error:", error);
+            console.log(
+                "DB connection error:",
+                error
+            );
         });
 });

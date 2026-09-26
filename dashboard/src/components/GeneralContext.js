@@ -4,9 +4,9 @@ import BuyActionWindow from "./BuyActionWindow";
 import SellActionWindow from "./SellActionWindow";
 
 const GeneralContext = React.createContext({
-    openBuyWindow: (uid) => {},
+    openBuyWindow: (uid, price, day) => {},
     closeBuyWindow: () => {},
-    openSellWindow: (uid) => {},
+    openSellWindow: (uid, price, day) => {},
     closeSellWindow: () => {},
     refreshHoldings: () => {},
     holdingsRefresh: 0,
@@ -20,29 +20,40 @@ export const GeneralContextProvider = (props) => {
     const [isSellWindowOpen, setIsSellWindowOpen] = useState(false);
 
     const [selectedStockUID, setSelectedStockUID] = useState("");
+    const [selectedStockPrice, setSelectedStockPrice] = useState(0);
+    const [selectedStockDay, setSelectedStockDay] = useState("0.00%");
+
     const [holdingsRefresh, setHoldingsRefresh] = useState(0);
     const [fundsRefresh, setFundsRefresh] = useState(0);
 
     const [successMessage, setSuccessMessage] = useState("");
 
-    const handleOpenBuyWindow = (uid) => {
+    const handleOpenBuyWindow = (uid, price, day) => {
         setIsBuyWindowOpen(true);
         setSelectedStockUID(uid);
+        setSelectedStockPrice(Number(price));
+        setSelectedStockDay(day || "0.00%");
     };
 
     const handleCloseBuyWindow = () => {
         setIsBuyWindowOpen(false);
         setSelectedStockUID("");
+        setSelectedStockPrice(0);
+        setSelectedStockDay("0.00%");
     };
 
-    const handleOpenSellWindow = (uid) => {
+    const handleOpenSellWindow = (uid, price, day) => {
         setIsSellWindowOpen(true);
         setSelectedStockUID(uid);
+        setSelectedStockPrice(Number(price));
+        setSelectedStockDay(day || "0.00%");
     };
 
     const handleCloseSellWindow = () => {
         setIsSellWindowOpen(false);
         setSelectedStockUID("");
+        setSelectedStockPrice(0);
+        setSelectedStockDay("0.00%");
     };
 
     const handleRefreshHoldings = () => {
@@ -85,7 +96,11 @@ export const GeneralContextProvider = (props) => {
                 <>
                     <div className="buy-window-overlay"></div>
 
-                    <BuyActionWindow uid={selectedStockUID} />
+                    <BuyActionWindow
+                        uid={selectedStockUID}
+                        marketPrice={selectedStockPrice}
+                        dayChange={selectedStockDay}
+                    />
                 </>
             )}
 
@@ -93,7 +108,11 @@ export const GeneralContextProvider = (props) => {
                 <>
                     <div className="buy-window-overlay"></div>
 
-                    <SellActionWindow uid={selectedStockUID} />
+                    <SellActionWindow
+                        uid={selectedStockUID}
+                        marketPrice={selectedStockPrice}
+                        dayChange={selectedStockDay}
+                    />
                 </>
             )}
 
@@ -108,4 +127,3 @@ export const GeneralContextProvider = (props) => {
 };
 
 export default GeneralContext;
-

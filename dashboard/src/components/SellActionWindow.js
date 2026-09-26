@@ -7,10 +7,16 @@ import GeneralContext from "./GeneralContext";
 
 import "./BuyActionWindow.css";
 
-const SellActionWindow = ({ uid }) => {
+const SellActionWindow = ({
+    uid,
+    marketPrice,
+    dayChange,
+}) => {
     const [product, setProduct] = useState("CNC");
     const [stockQuantity, setStockQuantity] = useState(1);
-    const [stockPrice, setStockPrice] = useState(0.0);
+    const [stockPrice, setStockPrice] = useState(
+        Number(marketPrice) || 0
+    );
     const [availableQuantity, setAvailableQuantity] = useState(0);
     const [error, setError] = useState("");
 
@@ -38,19 +44,21 @@ const SellActionWindow = ({ uid }) => {
             );
 
             if (product === "CNC") {
-                const holding = holdingsResponse.data.find(
-                    (item) => item.name === uid
-                );
+                const holding =
+                    holdingsResponse.data.find(
+                        (item) => item.name === uid
+                    );
 
                 setAvailableQuantity(
                     holding ? holding.qty : 0
                 );
             } else {
-                const position = positionsResponse.data.find(
-                    (item) =>
-                        item.name === uid &&
-                        item.product === "MIS"
-                );
+                const position =
+                    positionsResponse.data.find(
+                        (item) =>
+                            item.name === uid &&
+                            item.product === "MIS"
+                    );
 
                 setAvailableQuantity(
                     position ? position.qty : 0
@@ -62,17 +70,25 @@ const SellActionWindow = ({ uid }) => {
     };
 
     useEffect(() => {
+        setStockPrice(Number(marketPrice) || 0);
+    }, [marketPrice]);
+
+    useEffect(() => {
         loadAvailableQuantity();
     }, [product, uid]);
 
     const handleSellClick = async () => {
         if (availableQuantity === 0) {
-            setError("You need to buy this stock first");
+            setError(
+                "You need to buy this stock first"
+            );
             return;
         }
 
         if (Number(stockQuantity) <= 0) {
-            setError("Quantity must be greater than 0");
+            setError(
+                "Quantity must be greater than 0"
+            );
             return;
         }
 
@@ -83,13 +99,22 @@ const SellActionWindow = ({ uid }) => {
             return;
         }
 
+        if (Number(stockPrice) <= 0) {
+            setError(
+                "Price must be greater than 0"
+            );
+            return;
+        }
+
         try {
             await axios.post(
                 "http://localhost:3002/newOrder",
                 {
                     name: uid,
-                    qty: stockQuantity,
-                    price: stockPrice,
+                    qty: Number(stockQuantity),
+                    price: Number(stockPrice),
+                    marketPrice: Number(marketPrice),
+                    day: dayChange,
                     mode: "SELL",
                     product: product,
                 },
@@ -123,6 +148,9 @@ const SellActionWindow = ({ uid }) => {
     const handleCancelClick = () => {
         closeSellWindow();
     };
+
+    const marginRequired =
+        Number(stockQuantity) * Number(stockPrice);
 
     return (
         <div
@@ -158,6 +186,7 @@ const SellActionWindow = ({ uid }) => {
                             type="number"
                             name="qty"
                             id="qty"
+                            min="1"
                             onChange={(e) =>
                                 setStockQuantity(
                                     e.target.value
@@ -175,6 +204,7 @@ const SellActionWindow = ({ uid }) => {
                             name="price"
                             id="price"
                             step="0.05"
+                            min="0"
                             onChange={(e) =>
                                 setStockPrice(
                                     e.target.value
@@ -188,10 +218,19 @@ const SellActionWindow = ({ uid }) => {
                 <div className="available-quantity">
                     Available quantity: {availableQuantity}
                 </div>
+
+                <div className="market-info">
+                    LTP: ₹{Number(marketPrice).toFixed(2)}
+                    {" | "}
+                    Day: {dayChange}
+                </div>
             </div>
 
             <div className="buttons">
-                <span>Margin required: ₹ _ _</span>
+                <span>
+                    Order value: ₹{" "}
+                    {marginRequired.toFixed(2)}
+                </span>
 
                 <div>
                     <Link

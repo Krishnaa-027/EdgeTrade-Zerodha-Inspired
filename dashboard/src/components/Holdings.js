@@ -4,35 +4,66 @@ import axios from "axios";
 
 import GeneralContext from "./GeneralContext";
 
+import { VerticalGraph } from "./VerticalGraph";
+
 const Holdings = () => {
     const [allHoldings, setAllHoldings] = useState([]);
 
-    const { holdingsRefresh } = useContext(GeneralContext);
+    const { holdingsRefresh } =
+        useContext(GeneralContext);
 
     useEffect(() => {
-        axios.get("http://localhost:3002/allHoldings", {
-            withCredentials: true,
-        }).then((res) => {
+        axios.get(
+            "http://localhost:3002/allHoldings",
+            {
+                withCredentials: true,
+            }
+        ).then((res) => {
             setAllHoldings(res.data);
         });
     }, [holdingsRefresh]);
 
-    const totalInvestment = allHoldings.reduce((total, stock) => {
-        return total + stock.avg * stock.qty;
-    }, 0);
+    const totalInvestment =
+        allHoldings.reduce((total, stock) => {
+            return total + stock.avg * stock.qty;
+        }, 0);
 
-    const currentValue = allHoldings.reduce((total, stock) => {
-        return total + stock.price * stock.qty;
-    }, 0);
+    const currentValue =
+        allHoldings.reduce((total, stock) => {
+            return total + stock.price * stock.qty;
+        }, 0);
 
-    const totalPnL = currentValue - totalInvestment;
+    const totalPnL =
+        currentValue - totalInvestment;
 
     const totalPnLPercentage =
         totalInvestment === 0
             ? 0
             : (totalPnL / totalInvestment) * 100;
 
-    const totalPnLClass = totalPnL >= 0 ? "profit" : "loss";
+    const totalPnLClass =
+        totalPnL >= 0
+            ? "profit"
+            : "loss";
+
+    const labels =
+        allHoldings.map(
+            (stock) => stock.name
+        );
+
+    const data = {
+        labels,
+        datasets: [
+            {
+                label: "Stock Price",
+                data: allHoldings.map(
+                    (stock) => stock.price
+                ),
+                backgroundColor:
+                    "rgba(255, 99, 132, 0.5)",
+            },
+        ],
+    };
 
     return (
         <>
@@ -46,7 +77,8 @@ const Holdings = () => {
                     <h3>No holdings yet</h3>
 
                     <p>
-                        Your holdings will appear here after you buy a stock.
+                        Your holdings will appear here after
+                        you buy a stock.
                     </p>
                 </div>
 
@@ -69,58 +101,98 @@ const Holdings = () => {
                             </thead>
 
                             <tbody>
-                                {allHoldings.map((stock, index) => {
-                                    const curValue =
-                                        stock.price * stock.qty;
+                                {allHoldings.map(
+                                    (stock, index) => {
 
-                                    const isProfit =
-                                        curValue -
-                                            stock.avg * stock.qty >=
-                                        0.0;
+                                        const curValue =
+                                            stock.price *
+                                            stock.qty;
 
-                                    const profClass = isProfit
-                                        ? "profit"
-                                        : "loss";
+                                        const investment =
+                                            stock.avg *
+                                            stock.qty;
 
-                                    const dayClass = stock.isLoss
-                                        ? "loss"
-                                        : "profit";
+                                        const pnl =
+                                            curValue -
+                                            investment;
 
-                                    return (
-                                        <tr key={index}>
-                                            <td>{stock.name}</td>
+                                        const isProfit =
+                                            pnl >= 0;
 
-                                            <td>{stock.qty}</td>
+                                        const profClass =
+                                            isProfit
+                                                ? "profit"
+                                                : "loss";
 
-                                            <td>
-                                                {stock.avg.toFixed(2)}
-                                            </td>
+                                        const dayValue =
+                                            parseFloat(
+                                                stock.day
+                                            );
 
-                                            <td>
-                                                {stock.price.toFixed(2)}
-                                            </td>
+                                        const dayClass =
+                                            dayValue >= 0
+                                                ? "profit"
+                                                : "loss";
 
-                                            <td>
-                                                {curValue.toFixed(2)}
-                                            </td>
+                                        return (
+                                            <tr
+                                                key={index}
+                                            >
+                                                <td>
+                                                    {stock.name}
+                                                </td>
 
-                                            <td className={profClass}>
-                                                {(
-                                                    curValue -
-                                                    stock.avg * stock.qty
-                                                ).toFixed(2)}
-                                            </td>
+                                                <td>
+                                                    {stock.qty}
+                                                </td>
 
-                                            <td className={profClass}>
-                                                {stock.net}
-                                            </td>
+                                                <td>
+                                                    {stock.avg.toFixed(
+                                                        2
+                                                    )}
+                                                </td>
 
-                                            <td className={dayClass}>
-                                                {stock.day}
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
+                                                <td>
+                                                    {stock.price.toFixed(
+                                                        2
+                                                    )}
+                                                </td>
+
+                                                <td>
+                                                    {curValue.toFixed(
+                                                        2
+                                                    )}
+                                                </td>
+
+                                                <td
+                                                    className={
+                                                        profClass
+                                                    }
+                                                >
+                                                    {pnl.toFixed(
+                                                        2
+                                                    )}
+                                                </td>
+
+                                                <td
+                                                    className={
+                                                        profClass
+                                                    }
+                                                >
+                                                    {stock.net}
+                                                </td>
+
+                                                <td
+                                                    className={
+                                                        dayClass
+                                                    }
+                                                >
+                                                    {stock.day}
+                                                </td>
+                                            </tr>
+                                        );
+                                    }
+                                )}
                             </tbody>
                         </table>
                     </div>
@@ -128,31 +200,51 @@ const Holdings = () => {
                     <div className="row">
                         <div className="col">
                             <h5>
-                                {totalInvestment.toFixed(2)}
+                                {totalInvestment.toFixed(
+                                    2
+                                )}
                             </h5>
 
-                            <p>Total investment</p>
+                            <p>
+                                Total investment
+                            </p>
                         </div>
 
                         <div className="col">
                             <h5>
-                                {currentValue.toFixed(2)}
+                                {currentValue.toFixed(
+                                    2
+                                )}
                             </h5>
 
-                            <p>Current value</p>
+                            <p>
+                                Current value
+                            </p>
                         </div>
 
                         <div className="col">
-                            <h5 className={totalPnLClass}>
+                            <h5
+                                className={
+                                    totalPnLClass
+                                }
+                            >
                                 {totalPnL.toFixed(2)} (
-                                {totalPnLPercentage.toFixed(2)}%)
+                                {totalPnLPercentage.toFixed(
+                                    2
+                                )}
+                                %)
                             </h5>
 
                             <p>P&L</p>
                         </div>
                     </div>
-                </>
 
+                    <div className="holdings-chart">
+                        <VerticalGraph
+                            data={data}
+                        />
+                    </div>
+                </>
             )}
         </>
     );

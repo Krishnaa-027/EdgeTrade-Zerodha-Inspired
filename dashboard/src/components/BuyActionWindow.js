@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import axios from "axios";
@@ -7,10 +7,16 @@ import GeneralContext from "./GeneralContext";
 
 import "./BuyActionWindow.css";
 
-const BuyActionWindow = ({ uid }) => {
+const BuyActionWindow = ({
+    uid,
+    marketPrice,
+    dayChange,
+}) => {
     const [product, setProduct] = useState("CNC");
     const [stockQuantity, setStockQuantity] = useState(1);
-    const [stockPrice, setStockPrice] = useState(0.0);
+    const [stockPrice, setStockPrice] = useState(
+        Number(marketPrice) || 0
+    );
     const [error, setError] = useState("");
 
     const {
@@ -20,14 +26,30 @@ const BuyActionWindow = ({ uid }) => {
         showSuccessMessage,
     } = useContext(GeneralContext);
 
+    useEffect(() => {
+        setStockPrice(Number(marketPrice) || 0);
+    }, [marketPrice]);
+
     const handleBuyClick = async () => {
+        if (Number(stockQuantity) <= 0) {
+            setError("Quantity must be greater than 0");
+            return;
+        }
+
+        if (Number(stockPrice) <= 0) {
+            setError("Price must be greater than 0");
+            return;
+        }
+
         try {
             await axios.post(
                 "http://localhost:3002/newOrder",
                 {
                     name: uid,
-                    qty: stockQuantity,
-                    price: stockPrice,
+                    qty: Number(stockQuantity),
+                    price: Number(stockPrice),
+                    marketPrice: Number(marketPrice),
+                    day: dayChange,
                     mode: "BUY",
                     product: product,
                 },
@@ -60,6 +82,9 @@ const BuyActionWindow = ({ uid }) => {
     const handleCancelClick = () => {
         closeBuyWindow();
     };
+
+    const marginRequired =
+        Number(stockQuantity) * Number(stockPrice);
 
     return (
         <div
@@ -95,6 +120,7 @@ const BuyActionWindow = ({ uid }) => {
                             type="number"
                             name="qty"
                             id="qty"
+                            min="1"
                             onChange={(e) =>
                                 setStockQuantity(
                                     e.target.value
@@ -112,6 +138,7 @@ const BuyActionWindow = ({ uid }) => {
                             name="price"
                             id="price"
                             step="0.05"
+                            min="0"
                             onChange={(e) =>
                                 setStockPrice(
                                     e.target.value
@@ -121,10 +148,19 @@ const BuyActionWindow = ({ uid }) => {
                         />
                     </fieldset>
                 </div>
+
+                <div className="market-info">
+                    LTP: ₹{Number(marketPrice).toFixed(2)}
+                    {" | "}
+                    Day: {dayChange}
+                </div>
             </div>
 
             <div className="buttons">
-                <span>Margin required: ₹ _ _</span>
+                <span>
+                    Margin required: ₹{" "}
+                    {marginRequired.toFixed(2)}
+                </span>
 
                 <div>
                     <Link
