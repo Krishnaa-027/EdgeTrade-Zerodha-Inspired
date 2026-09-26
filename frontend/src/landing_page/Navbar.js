@@ -108,7 +108,8 @@ function NavBar() {
 
     const handleProfile = () => {
         setShowMenu(false);
-        window.location.href = `${process.env.REACT_APP_DASHBOARD_URL}/profile`;
+        window.location.href =
+            `${process.env.REACT_APP_DASHBOARD_URL}/profile`;
     };
 
     const handleMenuBoxClick = (event) => {
@@ -290,3 +291,4 @@ function NavBar() {
 }
 
 export default NavBar;
+

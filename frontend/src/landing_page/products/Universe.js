@@ -45,7 +45,6 @@ function Universe() {
             <div className="row text-center p-5">
 
                 <p
-                    className=""
                     style={{
                         fontSize: "20.5px",
                         marginBottom: "90px",
@@ -59,7 +58,7 @@ function Universe() {
                     blog.
                 </p>
 
-                <h1 className=" fs-3">
+                <h1 className="fs-3">
                     The Zerodha Universe
                 </h1>
 
@@ -164,7 +163,8 @@ function Universe() {
                 </div>
 
                 {!isLoggedIn && (
-                    <button
+                    <Link
+                        to="/signup"
                         className="p-2 btn btn-primary fs-5 mb-5"
                         style={{
                             width: "20%",
@@ -174,7 +174,7 @@ function Universe() {
                         }}
                     >
                         Sign up for free
-                    </button>
+                    </Link>
                 )}
 
             </div>
